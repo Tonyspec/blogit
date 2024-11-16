@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BDBA{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    {% block extra_head %}
+    {% endblock %}
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="{% url 'home' %}">blog.it</a></h1>
+            {% if user.is_authenticated %}
+                <nav>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </nav>
+                {% else %}
+                {% if request.resolver_match.url_name not in 'login,signup' %}
+                    <nav>
+                        <a href="{% url 'login' %}">Login</a>
+                        <a href="{% url 'signup' %}">Sign Up</a>
+                    </nav>
+                {% endif %}
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 BDBA. All rights reserved.</p>
+    </footer>
+
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

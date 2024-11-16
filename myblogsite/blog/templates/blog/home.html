@@ -9,33 +9,38 @@
 </head>
 <body>
     <header>
-        <h1>BDBA</h1>
+        <header>
+            <h1>blog.it</h1>
+            <nav>
+                <a href="{% url 'login' %}" style="color: white; text-decoration: none; font-size: 16px;">Login</a>
+            </nav>
+        </header>
     </header>
 
-    <div class="container">
-        <section class="blog-section">
-            <h2>Latest Tweets</h2>
-            {% for post in posts %}
-                <article class="post">
-                    <div class="post-header">
-                        <span class="post-author">{{ post.author.username }}</span>
-                        <span class="post-timestamp">• {{ post.date_posted|timesince }} ago</span>
-                    </div>
-                    <div class="post-content">{{ post.content }}</div>
-                    <div class="post-actions">
-                        <a href="#" class="action">Like</a>
-                        <a href="#" class="action">Comment</a>
-                        <a href="{% url 'post_detail' post.pk %}" class="action">Details</a>
-                    </div>
-                </article>
-            {% empty %}
-                <p>No tweets yet. Check back soon!</p>
-            {% endfor %}
-        </section>
-    </div>
+<div class="container">
+    <section class="blog-section">
+        <h2>Latest Tweets</h2>
+        {% for post in posts %}
+            <article class="post">
+                <div class="post-header">
+                    <span class="post-author">{{ post.author.username }}</span>
+                    <span class="post-timestamp">• {{ post.date_posted|timesince }} ago</span>
+                </div>
+                <div class="post-content">{{ post.content }}</div>
+                <div class="post-actions">
+                    <a href="#" class="action">Like</a>
+                    <a href="#" class="action">Comment</a>
+                    <a href="{% url 'post_detail' post.pk %}" class="action">Details</a>
+                </div>
+            </article>
+        {% empty %}
+            <p>No tweets yet. Check back soon!</p>
+        {% endfor %}
+    </section>
+</div>
 
-    <footer>
-        <p>© 2024 BDBA. All rights reserved.</p>
-    </footer>
+<footer>
+    <p>© 2024 BDBA. All rights reserved.</p>
+</footer>
 </body>
 </html>

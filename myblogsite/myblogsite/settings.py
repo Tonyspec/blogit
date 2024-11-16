@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'blog',
 ]
 
@@ -74,14 +75,21 @@ WSGI_APPLICATION = 'myblogsite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',  # or just 'postgresql'
+        'NAME': 'bdba',
+        'USER': 'txndxa',
+        'PASSWORD': 'unbeatable',
+        'HOST': 'localhost',  # or the server ip if not on your local machine
+        'PORT': '',  # default is usually 5432, leave empty if default
     }
 }
 
+AUTH_USER_MODEL = 'blog.ProfileUser'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'  # Or 'bootstrap3' if you're using Bootstrap 3
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 

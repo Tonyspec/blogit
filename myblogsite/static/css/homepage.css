@@ -1,56 +1,100 @@
-/* style.css */
-
+/* Base styles for the entire body */
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    line-height: 1.5;
+    font-family: 'Montserrat', sans-serif; /* Changed to a modern yet slightly hippie-like font */
+    line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f5f8fa;
+    background-color: #f9f7f3; /* Softer, more natural background color */
+    color: #333; /* Darker text for better readability */
 }
 
+/* Container for content */
 .container {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
     overflow: hidden;
-    padding: 20px;
+    padding-top: 80px; /* Space for fixed header */
 }
 
+/* Header styles */
 header {
-    background: #1DA1F2;
-    color: white;
-    padding: 10px 0;
+    background: #1DA1F2; /* A softer, more earthy tone for a hippie feel */
+    color: white; /* Dark blue for contrast */
+    padding: 15px 0;
     position: fixed;
     top: 0;
-    width: 100%;
+    left: 0;
+    right: 0;
     z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 header h1 {
+    font-size: 32px; /* Slightly larger for impact */
     text-align: center;
     margin: 0;
+    font-weight: 600; /* Not too bold */
+    font-style: italic; /* Adds a touch of the hippie aesthetic */
+    letter-spacing: 1px;
 }
 
+header h1 a {
+    color: #2c3e50; /* Dark blue for the logo */
+    text-decoration: none;
+}
+
+/* Navigation styles */
+header nav {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+header nav a {
+    color: #2c3e50;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+header nav a:hover {
+    color: #487ea6; /* A lighter blue on hover */
+    text-decoration: underline;
+}
+
+/* Blog section */
 .blog-section {
-    margin-top: 60px; /* Header height */
+    margin-top: 20px; /* Adjust for header height */
 }
 
 .post {
     background: white;
-    border: 1px solid #e1e8ed;
-    border-radius: 10px;
+    border-radius: 15px;
     margin-bottom: 20px;
-    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* Post components */
 .post-header {
     padding: 15px;
     border-bottom: 1px solid #e1e8ed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .post-author {
     font-weight: bold;
-    color: #1DA1F2;
+    color: #487ea6;
+    text-decoration: none;
 }
 
 .post-timestamp {
@@ -60,31 +104,75 @@ header h1 {
 
 .post-content {
     padding: 15px;
-    font-size: 1em;
+    font-size: 1.1em;
+    line-height: 1.7;
 }
 
 .post-actions {
     border-top: 1px solid #e1e8ed;
     padding: 10px 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .action {
     color: #657786;
     text-decoration: none;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+    border-radius: 20px; /* More rounded for a softer look */
 }
 
 .action:hover {
-    color: #1DA1F2;
+    background-color: #7fcdbb; /* Matches header color */
+    color: #2c3e50;
 }
 
+/* Footer */
 footer {
     text-align: center;
     padding: 20px 0;
-    background: #333;
-    color: white;
+    background: #2c3e50;
+    color: #ecf0f1;
     position: fixed;
     width: 100%;
     bottom: 0;
+    font-size: 0.9em;
+}
+
+/* Login container */
+.login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px; /* Soft edges */
+    background-color: #f9f7f3; /* Consistent with body background */
+}
+
+.btn-primary {
+    background-color:#1DA1F2;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0c84d4;
 }
