@@ -1,0 +1,90 @@
+/* style.css */
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f8fa;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 20px;
+}
+
+header {
+    background: #1DA1F2;
+    color: white;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+header h1 {
+    text-align: center;
+    margin: 0;
+}
+
+.blog-section {
+    margin-top: 60px; /* Header height */
+}
+
+.post {
+    background: white;
+    border: 1px solid #e1e8ed;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.post-header {
+    padding: 15px;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.post-author {
+    font-weight: bold;
+    color: #1DA1F2;
+}
+
+.post-timestamp {
+    color: #657786;
+    font-size: 0.9em;
+}
+
+.post-content {
+    padding: 15px;
+    font-size: 1em;
+}
+
+.post-actions {
+    border-top: 1px solid #e1e8ed;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.action {
+    color: #657786;
+    text-decoration: none;
+}
+
+.action:hover {
+    color: #1DA1F2;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    background: #333;
+    color: white;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

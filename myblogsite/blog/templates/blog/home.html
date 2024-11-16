@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog - Feels Like Twitter</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/homepage.css' %}">
+</head>
+<body>
+    <header>
+        <h1>BDBA</h1>
+    </header>
+
+    <div class="container">
+        <section class="blog-section">
+            <h2>Latest Tweets</h2>
+            {% for post in posts %}
+                <article class="post">
+                    <div class="post-header">
+                        <span class="post-author">{{ post.author.username }}</span>
+                        <span class="post-timestamp">• {{ post.date_posted|timesince }} ago</span>
+                    </div>
+                    <div class="post-content">{{ post.content }}</div>
+                    <div class="post-actions">
+                        <a href="#" class="action">Like</a>
+                        <a href="#" class="action">Comment</a>
+                        <a href="{% url 'post_detail' post.pk %}" class="action">Details</a>
+                    </div>
+                </article>
+            {% empty %}
+                <p>No tweets yet. Check back soon!</p>
+            {% endfor %}
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2024 BDBA. All rights reserved.</p>
+    </footer>
+</body>
+</html>
