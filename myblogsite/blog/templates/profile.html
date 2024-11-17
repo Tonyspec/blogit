@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="profile-header">
+    <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'path/to/default/image.jpg' %}{% endif %}" alt="Profile Image" class="profile-image">
+    <h2>{{ user.name|default:user.username }}</h2>
+    {% if user.bio %}
+    <p>{{ user.bio }}</p>
+    {% endif %}
+    {% if user.location %}
+    <p>Location: {{ user.location }}</p>
+    {% endif %}
+    {% if user.email %}
+    <p>Email: {{ user.email }}</p>
+    {% endif %}
+    <a href="{% url 'edit_profile' %}">Edit Profile</a>
+</div>
+{% endblock %}

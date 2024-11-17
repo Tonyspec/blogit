@@ -37,3 +37,53 @@ def signup_view(request):
     else:
         form = UserSignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from .forms import LoginForm
+
+def custom_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # Redirect to home or wherever after successful login
+            else:
+                messages.error(request, "Invalid username or password.")
+        else:
+            messages.error(request, "Invalid form data.")
+    else:
+        form = LoginForm()
+    return render(request, 'registration/login.html')
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm, ProfileEditForm  # Make sure this import reflects your actual form name
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile edited successfully!')
+            return redirect('profile')  # Or another appropriate redirection
+    else:
+        form = ProfileEditForm(instance=request.user)
+    return render(request, 'edit_profile.html', {'form': form})
+
+@login_required(login_url='login')  # Redirect to login if not authenticated
+def profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')  # Redirect back to profile page after update
+    else:
+        form = ProfileForm(instance=request.user)
+    return render(request, 'profile.html', {'form': form})

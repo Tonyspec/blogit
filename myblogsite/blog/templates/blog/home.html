@@ -6,13 +6,20 @@
     <title>My Blog - Feels Like Twitter</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/homepage.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <header>
         <header>
             <h1>blog.it</h1>
             <nav>
-                <a href="{% url 'login' %}" style="color: white; text-decoration: none; font-size: 16px;">Login</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}" class="profile-link" title="Profile">
+                        <i class="fa-solid fa-user-circle"></i> <!-- Using Font Awesome for icon -->
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" style="color: white; text-decoration: none; font-size: 16px;">Login</a>
+                {% endif %}
             </nav>
         </header>
     </header>

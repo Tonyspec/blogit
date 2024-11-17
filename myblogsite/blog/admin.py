@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 
-from .models import Post
+from .models import Post, ProfileUser
 admin.site.register(Post)
+admin.site.register(ProfileUser)
 

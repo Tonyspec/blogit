@@ -176,3 +176,21 @@ footer {
 .btn-primary:hover {
     background-color: #0c84d4;
 }
+
+/* Include this in your CSS or directly in the HTML head */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
+/* Styling for the profile icon */
+.profile-link {
+    color: #2c3e50; /* Match the color from your navigation links */
+    font-size: 24px; /* Adjust size as needed */
+    display: inline-block; /* To allow padding without affecting line height */
+    padding: 5px 15px; /* Space around the icon */
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.profile-link:hover {
+    color: #487ea6; /* Hover color from your existing style */
+    transform: scale(1.1); /* Small zoom effect on hover */
+}

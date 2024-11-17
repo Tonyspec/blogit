@@ -19,3 +19,19 @@ class UserSignUpForm(UserCreationForm):
         if commit:
             user.save()
         return user
+    
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
+class LoginForm(AuthenticationForm):
+    pass  # You can customize the form here if needed, but for now, we'll use the default fields
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = ProfileUser
+        fields = ['name', 'bio', 'location', 'profile_image', 'email']
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = ProfileUser
+        fields = ['name', 'bio', 'location', 'profile_image', 'email']  # Include profile_image

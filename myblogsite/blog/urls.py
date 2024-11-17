@@ -6,6 +6,8 @@ from .views import signup_view
 urlpatterns = [
     path('', views.post_list, name='post_list'),
     path('post/<int:pk>/', views.post_detail, name='post_detail'),
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('login/', views.custom_login, name='login'),
     path('signup/', signup_view, name='signup'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 ]
