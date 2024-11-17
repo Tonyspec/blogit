@@ -27,6 +27,7 @@
 <div class="container">
     <section class="blog-section">
         <h2>Latest Tweets</h2>
+        <a href="{% url 'create_post' %}">Create New Post</a>
         {% for post in posts %}
             <article class="post">
                 <div class="post-header">

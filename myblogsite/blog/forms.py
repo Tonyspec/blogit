@@ -35,3 +35,11 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = ProfileUser
         fields = ['name', 'bio', 'location', 'profile_image', 'email']  # Include profile_image
+
+from django import forms
+from .models import Post
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'post_image']

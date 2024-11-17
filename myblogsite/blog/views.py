@@ -87,3 +87,23 @@ def profile(request):
     else:
         form = ProfileForm(instance=request.user)
     return render(request, 'profile.html', {'form': form})
+
+from .forms import PostForm
+@login_required
+def create_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user  # Assuming ProfileUser is related to User
+            post.save()
+            return redirect('home')  # Assuming 'post_list' is the name of your view showing all posts
+    else:
+        form = PostForm()
+    return render(request, 'create_post.html', {'form': form})
+
+@login_required
+def home(request):
+    # Fetch all posts or latest posts, here we're fetching all
+    posts = Post.objects.all().order_by('-date_posted', '-time_posted')[:10]  # Latest 10 posts
+    return render(request, 'blog/home.html', {'posts': posts})
