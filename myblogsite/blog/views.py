@@ -1,9 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, ProfileUser
-# Create your views here.
-
-
+from .models import Post, ProfileUser, Like
 from django.shortcuts import render
+from django.http import JsonResponse
 
 def home(request):
     return render(request, 'blog/home.html')
@@ -111,3 +109,36 @@ def home(request):
     # Fetch all posts or latest posts, here we're fetching all
     posts = Post.objects.all().order_by('-date_posted', '-time_posted')[:10]  # Latest 10 posts
     return render(request, 'blog/home.html', {'posts': posts})
+
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    user = request.user
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if Like.objects.filter(user=user, post=post).exists():
+            Like.objects.filter(user=user, post=post).delete()
+            liked = False
+        else:
+            Like.objects.create(user=user, post=post)
+            liked = True
+        
+        # Return JSON response
+        return JsonResponse({
+            'liked': liked,
+            'likes_count': post.likes_count()
+        })
+    
+    # If not an AJAX request, redirect (though this should not occur with AJAX setup)
+    return redirect('post_detail', pk=post_id)
+@login_required
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    # Check if user liked this post
+    liked = Like.objects.filter(user=request.user, post=post).exists()
+    
+    return render(request, 'blog/post_detail.html', {
+        'post': post,
+        'liked': liked,
+        'likes_count': post.likes_count()
+    })

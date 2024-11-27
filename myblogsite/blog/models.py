@@ -27,11 +27,30 @@ class Post(models.Model):
     author = models.ForeignKey('blog.ProfileUser', on_delete=models.CASCADE)
     post_image = models.ImageField(upload_to='post_images/', blank=True, null=True)  # Optional image for post
 
+    def likes_count(self):
+        return Like.objects.filter(post=self).count()
+
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
         return f"/post/{self.pk}/"
+    
+# In your models.py
+
+from django.db import models
+from django.contrib.auth import get_user_model
+
+class Like(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')
+
+    def __str__(self):
+        return f"{self.user.username} likes {self.post.title}"
     
 
 

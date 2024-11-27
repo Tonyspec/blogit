@@ -62,6 +62,16 @@ body {
     border-radius: 0 10px 10px 0;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 }
+/* Adjust for images in posts on the profile page */
+.post img {
+    max-width: 100%;  /* Ensures images do not exceed their container */
+    height: auto;     /* Maintain aspect ratio */
+    display: block;   /* Removes bottom space added by inline-block elements */
+    margin: 10px 0;   /* Some top and bottom margin */
+    border-radius: 8px; /* Rounded corners for aesthetic */
+    max-height: 300px; /* Limit the height to prevent overly large images */
+    object-fit: cover; /* Optionally, for maintaining aspect ratio while filling space */
+}
 
 .post h3 {
     color: #14171a;

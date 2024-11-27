@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/post_detail.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="post-detail">
+    <h2>{{ post.title }}</h2>
+    <p>By: <a href="{% url 'profile' post.author.username %}">{{ post.author.username }}</a></p>
+    <p>{{ post.content }}</p>
+    
+    {% if post.post_image %}
+        <img src="{{ post.post_image.url }}" alt="Post Image" class="post-image">
+    {% endif %}
+
+    <div class="post-meta">
+        <small>Posted on {{ post.date_posted }} at {{ post.time_posted }}</small>
+    </div>
+
+    <div class="post-actions">
+        <form action="{% url 'like_post' post.id %}" method="POST" class="like-form">
+            {% csrf_token %}
+            <button type="submit" class="like-button {% if post in request.user.liked_posts %}liked{% endif %}">
+                <i class="fa fa-heart" aria-hidden="true"></i>
+                <span class="like-count">{{ post.likes_count }}</span>
+            </button>
+        </form>
+        <a href="#" class="action"><i class="fa fa-comment"></i> Comment</a>
+        <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
+    </div>
+
+    <!-- Add a link back to the list of posts -->
+    <a href="{% url 'home' %}" class="back-to-list">Back to Posts</a>
+    <script src="{% static 'js/like_post.js' %}"></script>
+</div>
+{% endblock %}

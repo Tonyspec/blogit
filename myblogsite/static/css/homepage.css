@@ -1,9 +1,9 @@
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Roboto', Arial, sans-serif; /* Changed to Roboto for a modern look */
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f9f7f3;
+    background-color: #f9f9f9;
     color: #333;
 }
 
@@ -11,62 +11,63 @@ body {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
-    overflow: hidden;
     padding-top: 80px;
 }
 
 header {
     background: #1DA1F2;
     color: white;
-    padding: 15px 0;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 header h1 {
-    font-size: 32px;
+    font-size: 28px;
     text-align: center;
     margin: 0;
-    font-weight: 600;
-    font-style: italic;
-    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase; /* Uppercase for a bold look */
+    letter-spacing: 2px;
 }
 
 header nav {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     padding-right: 20px;
 }
 
 header nav a {
-    color: #2c3e50;
+    color: white;
     text-decoration: none;
     margin-left: 20px;
     font-size: 16px;
-    transition: color 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 header nav a:hover {
-    color: #487ea6;
+    opacity: 0.8;
 }
 
 .blog-section h2 {
     color: #1DA1F2;
     font-size: 24px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    font-weight: 500;
 }
 
 .btn-create-post {
     display: inline-block;
     background-color: #1DA1F2;
     color: white;
-    padding: 10px 15px;
+    padding: 10px 20px;
     text-decoration: none;
-    border-radius: 20px;
+    border-radius: 25px;
+    font-weight: 600;
     margin-bottom: 20px;
     transition: background-color 0.3s ease;
 }
@@ -74,14 +75,21 @@ header nav a:hover {
 .btn-create-post:hover {
     background-color: #0c84d4;
 }
-
+/* Adjust for images in posts on the homepage */
+.post img {
+    max-width: 100%;  /* Ensures images do not exceed their container */
+    height: auto;     /* Maintain aspect ratio */
+    display: block;   /* Removes bottom space added by inline-block elements */
+    margin: 10px auto; /* Centers the image if it's smaller than the post width */
+    border-radius: 8px; /* Rounded corners for aesthetic */
+}
 footer {
     text-align: center;
     padding: 20px 0;
     background: #2c3e50;
     color: #ecf0f1;
-    position: fixed;
     width: 100%;
     bottom: 0;
     font-size: 0.9em;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
 }
