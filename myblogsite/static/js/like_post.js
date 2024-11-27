@@ -32,4 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     images.forEach(img => {
         if (img.height > 300) { // or whatever max height you prefer
             img.style.height = '300px';
-            img.style.w
+            img.style.width = 'auto'; // maintain aspect ratio
+        }
+    });
+});
