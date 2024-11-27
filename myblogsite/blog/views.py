@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post
+from .models import Post, ProfileUser
 # Create your views here.
 
 
@@ -77,16 +77,20 @@ def edit_profile(request):
         form = ProfileEditForm(instance=request.user)
     return render(request, 'edit_profile.html', {'form': form})
 
-@login_required(login_url='login')  # Redirect to login if not authenticated
-def profile(request):
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')  # Redirect back to profile page after update
+@login_required(login_url='login')
+def profile(request, username=None):
+    if username is None:
+        user = request.user
     else:
-        form = ProfileForm(instance=request.user)
-    return render(request, 'profile.html', {'form': form})
+        user = get_object_or_404(ProfileUser, username=username)
+    
+    # This should fetch posts for the correct user
+    posts = Post.objects.filter(author=user).order_by('-date_posted', '-time_posted')
+    
+    return render(request, 'profile.html', {
+        'user_profile': user,
+        'posts': posts
+    })
 
 from .forms import PostForm
 @login_required
@@ -102,7 +106,7 @@ def create_post(request):
         form = PostForm()
     return render(request, 'create_post.html', {'form': form})
 
-@login_required
+
 def home(request):
     # Fetch all posts or latest posts, here we're fetching all
     posts = Post.objects.all().order_by('-date_posted', '-time_posted')[:10]  # Latest 10 posts

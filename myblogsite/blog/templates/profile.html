@@ -5,20 +5,40 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
 {% endblock %}
 
-
 {% block content %}
 <div class="profile-header">
-    <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'path/to/default/image.jpg' %}{% endif %}" alt="Profile Image" class="profile-image">
-    <h2>{{ user.name|default:user.username }}</h2>
-    {% if user.bio %}
-    <p>{{ user.bio }}</p>
+    <img src="{% if user_profile.profile_image %}{{ user_profile.profile_image.url }}{% else %}{% static 'path/to/default/image.jpg' %}{% endif %}" alt="Profile Image" class="profile-image">
+    <h2>{{ user_profile.name|default:user_profile.username }}</h2>
+    {% if user_profile.bio %}
+    <p>{{ user_profile.bio }}</p>
     {% endif %}
-    {% if user.location %}
-    <p>Location: {{ user.location }}</p>
+    {% if user_profile.location %}
+    <p>Location: {{ user_profile.location }}</p>
     {% endif %}
-    {% if user.email %}
-    <p>Email: {{ user.email }}</p>
+    {% if user_profile.email %}
+    <p>Email: {{ user_profile.email }}</p>
     {% endif %}
-    <a href="{% url 'edit_profile' %}">Edit Profile</a>
 </div>
+
+<div class="profile-details">
+    <h3>Posts</h3>
+    {% if posts %}
+    {% for post in posts %}
+        <div class="post">
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.content }}</p>
+            <small>Posted on {{ post.date_posted }} at {{ post.time_posted }}</small>
+            {% if post.post_image %}
+                <img src="{{ post.post_image.url }}" alt="Post Image">
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No posts yet!</p>
+    {% endfor %}
+    {% else %}
+        <p>No posts to display.</p>
+    {% endif %}
+</div>
+
+<a href="{% url 'edit_profile' %}">Edit Profile</a>
 {% endblock %}
