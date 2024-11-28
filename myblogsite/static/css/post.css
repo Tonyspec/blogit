@@ -38,9 +38,10 @@
 
 .post-actions {
     border-top: 1px solid #e1e8ed;
-    padding: 10px 15px;
     display: flex;
     justify-content: space-around;
+    background: white;
+    padding: 0.8em;
 }
 
 .action, .like-button {

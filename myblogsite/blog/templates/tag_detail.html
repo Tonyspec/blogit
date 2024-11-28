@@ -10,10 +10,49 @@
 
 <h1>Posts Tagged with #{{ tag.name }}</h1>
 {% for post in posts %}
-    <div class="post">
-        <h2><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h2>
-        <p>{{ post.content|truncatewords:30 }}</p>
-        <!-- Include tags if you want, or other post details -->
+<article class="post clickable" data-post-id="{{ post.id }}">
+    <div class="post-header">
+        <span class="post-author">
+            <a href="{% url 'profile' post.author.username %}">{{ post.author.username }}</a>
+        </span>
+        <h3>{{ post.title }}</h3>
+        <span class="post-timestamp"> {{ post.date_posted }}</span>
     </div>
+    <div class="tags">
+        {% for tag in post.tags.all %}
+            <a href="{% url 'tag_detail' tag.slug %}" class="tag">#{{ tag.name }}</a>
+        {% endfor %}
+    </div>
+    <div class="post-content">{{ post.content }}</div>
+    {% for image in post.images.all %}
+        <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
+    {% endfor %}
+    <div class="post-actions">
+        <form action="{% url 'like_post' post.id %}" method="POST" class="like-form">
+            {% csrf_token %}
+            <button type="submit" class="like-button {% if post in request.user.liked_posts %}liked{% endif %}">
+                <i class="fa fa-heart" aria-hidden="true"></i>
+                <span class="like-count">{{ post.likes_count }}</span>
+            </button>
+        </form>
+        <button class="toggle-comment"><i class="fa fa-comment"></i> Comment</button>
+        <div id="commentPopup" class="comment-popup">
+            <span class="close-comment">×</span>
+            <div class="comment-popup-content">
+                <div class="comment-form">
+                    <form action="{% url 'post_detail' post.pk %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <input type="text" name="comment_content" placeholder="Add a comment...">
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
+    </div>
+</article>
+{% empty %}
+<p>No tweets yet. Check back soon!</p>
 {% endfor %}
 {% endblock %}

@@ -24,15 +24,23 @@ header {
     z-index: 1000;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     padding-top: 1em;
+    display: flex;
+    justify-content: space-between; /* Space between h1 and nav */
+    align-items: center; /* Align items vertically in the center */
 }
 
 header h1 {
-    font-size: 28px;
-    text-align: center;
+    font-size: 2em;
     margin: 0;
     font-weight: 700;
-    text-transform: uppercase; /* Uppercase for a bold look */
     letter-spacing: 2px;
+    margin-left: 1em;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
 }
 
 header nav {
@@ -53,6 +61,26 @@ header nav a {
 header nav a:hover {
     opacity: 0.8;
 }
+
+/* Make the container in the header use flexbox */
+.site-header .container {
+    display: flex;
+    
+    padding-top: 1em; /* Adjust padding as needed */
+    padding-bottom: 1em;
+}
+
+/* Adjust h1 to fit within the flex container */
+.site-header h1 {
+    
+}
+
+/* Ensure nav items are properly aligned */
+.site-header .site-nav {
+    display: flex;
+    align-items: center; /* Align nav items vertically */
+}
+
 
 .blog-section h2 {
     color: #1DA1F2;
@@ -241,4 +269,27 @@ transition: all 0.3s ease;
 
 .comment-popup .comment-form button[type="submit"]:hover {
     background-color: #0c84d4;
+}
+.post-images {
+    display: flex;
+    flex-wrap: wrap; /* Allows images to wrap if more than 2 */
+    gap: 10px; /* Space between images */
+    justify-content: center; /* Center images if less than 2 */
+}
+
+.post-images img {
+    max-width: 100%; /* Ensure images don't exceed their container */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Rounded corners */
+    object-fit: cover; /* If you want images to cover their container */
+    flex-grow: 1; /* Allow images to grow if space is available */
+    flex-basis: calc(50% - 10px); /* Half width minus gap for two images */
+    min-width: 150px; /* Minimum width for images */
+}
+
+/* For screens smaller than 600px, make images stack vertically */
+@media (max-width: 600px) {
+    .post-images img {
+        flex-basis: 100%;
+    }
 }
