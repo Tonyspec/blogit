@@ -6,9 +6,9 @@ from django.http import JsonResponse
 def home(request):
     return render(request, 'blog/home.html')
 
-def post_list(request):
-    posts = Post.objects.all()
-    return render(request, 'blog/post_list.html', {'posts': posts})
+# def post_list(request):
+#     posts = Post.objects.all()
+#     return render(request, 'blog/post_list.html', {'posts': posts})
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -132,18 +132,6 @@ def like_post(request, post_id):
     # If not an AJAX request, redirect (though this should not occur with AJAX setup)
     return redirect('post_detail', pk=post_id)
 @login_required
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    # Check if user liked this post
-    liked = Like.objects.filter(user=request.user, post=post).exists()
-    
-    return render(request, 'blog/post_detail.html', {
-        'post': post,
-        'liked': liked,
-        'likes_count': post.likes_count()
-    })
-
-@login_required
 def post_list(request):
     posts = Post.objects.all()
     
@@ -152,6 +140,7 @@ def post_list(request):
         content = request.POST.get('comment_content')
         post = get_object_or_404(Post, id=post_id)
         Comment.objects.create(post=post, author=request.user, content=content)
+        # Redirect back to homepage or refresh data via AJAX
         return redirect('home')
 
     return render(request, 'home.html', {'posts': posts})

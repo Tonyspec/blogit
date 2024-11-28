@@ -5,16 +5,19 @@
     background: white;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-family: 'Arial', sans-serif; /* Ensures a consistent font */
 }
 
 .post-detail h2 {
     color: #2c3e50;
     margin-bottom: 10px;
+    font-size: 24px; /* Larger font size for better readability */
 }
 
 .post-detail p {
     color: #1c2022;
     line-height: 1.6;
+    font-size: 16px; /* Standardizes text size */
 }
 
 .post-image {
@@ -22,6 +25,10 @@
     height: auto;
     border-radius: 8px;
     margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Adds depth to images */
+    display: block; /* Ensures proper block-level behavior */
+    margin-left: auto; /* Centers image */
+    margin-right: auto;
 }
 
 .post-meta {
@@ -30,22 +37,52 @@
     margin-top: 10px;
 }
 
-/* .post-actions {
+/* Styling for the comment section */
+.comment-section {
+    margin-top: 30px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+}
+
+.comment {
+    background: #f9f9f9;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.comment strong {
+    color: #2c3e50; /* Matches h2 color for consistency */
+}
+
+.comment-form {
+    display: flex;
     margin-top: 20px;
 }
 
-.post-actions button {
+.comment-form input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    outline: none; /* Removes default outline for a cleaner look */
+}
+
+.comment-form button {
     background-color: #1DA1F2;
     color: white;
     border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 10px;
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.post-actions button:hover {
+.comment-form button:hover {
     background-color: #0c84d1;
-} */
+}
 
 .back-to-list {
     display: inline-block;
@@ -53,8 +90,30 @@
     text-decoration: none;
     color: #1DA1F2;
     font-size: 14px;
+    transition: color 0.3s, text-decoration 0.3s;
 }
 
 .back-to-list:hover {
+    color: #0c84d1;
     text-decoration: underline;
+}
+
+/* Toggle button for the comment form */
+.toggle-comment {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.toggle-comment:hover {
+    background-color: #45a049;
 }

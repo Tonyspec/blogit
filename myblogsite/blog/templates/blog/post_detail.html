@@ -31,17 +31,22 @@
         <a href="#" class="action"><i class="fa fa-comment"></i> Comment</a>
         <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
     </div>
-    {% for comment in comments %}
-    <div class="comment">
-        <strong>{{ comment.author.username }}</strong>: {{ comment.content }} - {{ comment.created_at }}
+    <div class="comment-section">
+        <h3>Comments</h3>
+        {% for comment in comments %}
+            <div class="comment">
+                <strong>{{ comment.author.username }}</strong>: {{ comment.content }} - {{ comment.created_at }}
+            </div>
+        {% endfor %}
+        <div class="comment-form hidden">
+            <form action="{% url 'post_detail' post.pk %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="comment_content" placeholder="Add your comment...">
+                <button type="submit">Comment</button>
+            </form>
+        </div>
     </div>
-{% endfor %}
 
-<form action="{% url 'post_detail' post.pk %}" method="post">
-    {% csrf_token %}
-    <input type="text" name="comment_content" placeholder="Add your comment...">
-    <button type="submit">Comment</button>
-</form>
 
     <!-- Add a link back to the list of posts -->
     <a href="{% url 'home' %}" class="back-to-list">Back to Posts</a>
