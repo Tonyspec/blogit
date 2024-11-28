@@ -35,6 +35,11 @@
                         </span>
                         <span class="post-timestamp"> {{ post.date_posted }}</span>
                     </div>
+                    <div class="tags">
+                        {% for tag in post.tags.all %}
+                            <a href="{% url 'tag_detail' tag.slug %}" class="tag">#{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
                     <div class="post-content">{{ post.content }}</div>
                     {% for image in post.images.all %}
                         <img src="{{ image.image.url }}" alt="{{ image.image.name }}">

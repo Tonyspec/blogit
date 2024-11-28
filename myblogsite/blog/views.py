@@ -112,18 +112,12 @@ def create_post(request):
     else:
         form = PostForm()
     return render(request, 'create_post.html', {'form': form})
-# @login_required
-# def create_post(request):
-#     if request.method == 'POST':
-#         form = PostForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             post = form.save(commit=False)
-#             post.author = request.user  # Assuming ProfileUser is related to User
-#             post.save()
-#             return redirect('home')  # Assuming 'post_list' is the name of your view showing all posts
-#     else:
-#         form = PostForm()
-#     return render(request, 'create_post.html', {'form': form})
+from taggit.models import Tag
+
+def tag_detail(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.objects.filter(tags__in=[tag])
+    return render(request, 'tag_detail.html', {'tag': tag, 'posts': posts})
 
 
 def home(request):
