@@ -1,13 +1,64 @@
 {% extends 'base.html' %}
+{% load static %}
 
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/create_post.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+
+{% endblock %}
 {% block content %}
-    <h1>Create New Post</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.title }}
-        {{ form.content }}
-        {{ form.tags }}
-        <input type="file" name="images" multiple accept="image/*">
-        <button type="submit">Submit</button>
-    </form>
+    <div class="create-post-wrapper">
+        <h1>Create New Post</h1>
+        <form method="post" enctype="multipart/form-data" class="post-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Title:</label>
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.content.id_for_label }}">Content:</label>
+                {{ form.content }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.tags.id_for_label }}">Tags (comma separated):</label>
+                {{ form.tags }}
+            </div>
+            <div class="form-group image-upload">
+                <label for="id_images">Upload Images:</label>
+                <input type="file" name="images" id="id_images" multiple accept="image/*">
+                <div id="preview-images"></div>
+            </div>
+            <button type="submit" class="btn-submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('id_images');
+        const preview = document.getElementById('preview-images');
+
+        input.addEventListener('change', function() {
+            while (preview.firstChild) {
+                preview.removeChild(preview.firstChild);
+            }
+
+            const files = this.files;
+            for (let i = 0; i < files.length; i++) {
+                const img = document.createElement('img');
+                img.file = files[i];
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '100px';
+                img.style.margin = '5px';
+                preview.appendChild(img);
+
+                const reader = new FileReader();
+                reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
+                reader.readAsDataURL(files[i]);
+            }
+        });
+    });
+</script>
 {% endblock %}

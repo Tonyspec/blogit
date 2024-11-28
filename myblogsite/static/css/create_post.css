@@ -1,0 +1,67 @@
+.create-post-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.post-form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.post-form input[type="text"], 
+.post-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.post-form textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+.post-form .image-upload input[type="file"] {
+    margin-bottom: 10px;
+}
+
+#preview-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.btn-submit {
+    background-color: #1DA1F2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #0c84d4;
+}
+
+/* Style for tags input which might be different depending on your form widget */
+.post-form input[type="text"][name="tags"] {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
