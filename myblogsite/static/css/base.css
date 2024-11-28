@@ -1,4 +1,4 @@
-/* Base styles for the entire document */
+/* Base styles for the entire document*/
 body {
     font-family: 'Roboto', Arial, sans-serif;
     line-height: 1.6;
@@ -201,11 +201,42 @@ a {
     flex-grow: 1; /* Allow images to grow if space is available */
     flex-basis: calc(50% - 10px); /* Half width minus gap for two images */
     min-width: 150px; /* Minimum width for images */
-}
+}/*
 
-/* For screens smaller than 600px, make images stack vertically */
+/* For screens smaller than 600px, make images stack vertically 
 @media (max-width: 600px) {
     .post-images img {
         flex-basis: 100%;
     }
+}  */
+
+/* Styling for the logout form to ensure no margin or padding */
+.logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Styling for the logout button */
+.logout-button {
+    background-color: #1DA1F2; /* Matches your theme color */
+    color: white;
+    border: none;
+    padding: 8px 15px; /* Adjust padding as needed */
+    border-radius: 25px; /* Same as your create post button for consistency */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* Remove underline if any */
+}
+
+/* Hover effect for the logout button */
+.logout-button:hover {
+    background-color: #0c84d4; /* Darker shade for hover effect */
+}
+
+/* Style for when the button is focused or activated */
+.logout-button:focus, 
+.logout-button:active {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 2px rgba(29, 161, 242, 0.4); /* Add a subtle glow on focus for accessibility */
 }

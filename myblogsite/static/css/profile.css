@@ -114,3 +114,34 @@ a[href*="edit_profile"] {
 a[href*="edit_profile"]:hover {
     background-color: #0c84d1;
 }
+
+/* Styling for the logout form to ensure no margin or padding */
+.logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Styling for the logout button */
+.logout-button {
+    background-color: #1DA1F2; /* Matches your theme color */
+    color: white;
+    border: none;
+    padding: 8px 15px; /* Adjust padding as needed */
+    border-radius: 25px; /* Same as your create post button for consistency */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* Remove underline if any */
+}
+
+/* Hover effect for the logout button */
+.logout-button:hover {
+    background-color: #0c84d4; /* Darker shade for hover effect */
+}
+
+/* Style for when the button is focused or activated */
+.logout-button:focus, 
+.logout-button:active {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 2px rgba(29, 161, 242, 0.4); /* Add a subtle glow on focus for accessibility */
+}
