@@ -36,9 +36,9 @@
                         <span class="post-timestamp"> {{ post.date_posted }}</span>
                     </div>
                     <div class="post-content">{{ post.content }}</div>
-                    {% if post.post_image %}
-                    <img src="{{ post.post_image.url }}" alt="Post Image" class="post-image">
-                    {% endif %}
+                    {% for image in post.images.all %}
+                        <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
+                    {% endfor %}
                     <div class="post-actions">
                         <form action="{% url 'like_post' post.id %}" method="POST" class="like-form">
                             {% csrf_token %}

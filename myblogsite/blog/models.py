@@ -8,6 +8,8 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from taggit.managers import TaggableManager
+from django.core.exceptions import ValidationError
 
 class ProfileUser(AbstractUser):
     # Inherits all fields from AbstractUser (username, password, email, etc.)
@@ -19,13 +21,17 @@ class ProfileUser(AbstractUser):
     def __str__(self):
         return self.username if self.name is None else self.name
 
+class PostImage(models.Model):
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='post_images/')
+
 class Post(models.Model):
     title = models.CharField(max_length=200)
-    content = models.TextField(max_length=1000)  # Limit content to 1000 characters
+    content = models.TextField()  # Now can hold larger articles
     date_posted = models.DateField(default=timezone.now)
     time_posted = models.TimeField(default=timezone.now)
     author = models.ForeignKey('blog.ProfileUser', on_delete=models.CASCADE)
-    post_image = models.ImageField(upload_to='post_images/', blank=True, null=True)  # Optional image for post
+    tags = TaggableManager()  # Tags for the post, at least one is required
 
     def likes_count(self):
         return Like.objects.filter(post=self).count()

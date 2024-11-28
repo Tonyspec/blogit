@@ -90,19 +90,40 @@ def profile(request, username=None):
         'posts': posts
     })
 
-from .forms import PostForm
+from .forms import PostForm, PostImage
 @login_required
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user  # Assuming ProfileUser is related to User
-            post.save()
-            return redirect('home')  # Assuming 'post_list' is the name of your view showing all posts
+            post = form.save(commit=False)  # Save with commit=False to set author
+            post.author = request.user  # Set the author
+            post.save()  # Now save the post with the author set
+            
+            # Handle tags after saving the instance
+            form.save_m2m()
+
+            # Handle images if they were uploaded
+            images = form.cleaned_data.get('images', [])
+            for image in images:
+                PostImage.objects.create(post=post, image=image)
+
+            return redirect('home')
     else:
         form = PostForm()
     return render(request, 'create_post.html', {'form': form})
+# @login_required
+# def create_post(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             post = form.save(commit=False)
+#             post.author = request.user  # Assuming ProfileUser is related to User
+#             post.save()
+#             return redirect('home')  # Assuming 'post_list' is the name of your view showing all posts
+#     else:
+#         form = PostForm()
+#     return render(request, 'create_post.html', {'form': form})
 
 
 def home(request):

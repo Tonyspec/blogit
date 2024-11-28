@@ -29,9 +29,9 @@
             <h3>{{ post.title }}</h3>
             <p>{{ post.content }}</p>
             <small>Posted on {{ post.date_posted }} at {{ post.time_posted }}</small>
-            {% if post.post_image %}
-            <img src="{{ post.post_image.url }}" alt="Post Image" class="post-image">
-            {% endif %}
+            {% for image in post.images.all %}
+                <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
+            {% endfor %}
             <div class="post-actions">
                 <form action="{% url 'like_post' post.id %}" method="POST" class="like-form">
                     {% csrf_token %}

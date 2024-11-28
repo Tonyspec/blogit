@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import ProfileUser
+from .models import ProfileUser, Post, PostImage
 
 class UserSignUpForm(UserCreationForm):
     name = forms.CharField(max_length=150, required=False)
@@ -39,7 +39,42 @@ class ProfileForm(forms.ModelForm):
 from django import forms
 from .models import Post
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+class MultipleFileField(forms.FileField):
+    widget = MultipleFileInput
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            result = [single_file_clean(d, initial) for d in data]
+        else:
+            result = single_file_clean(data, initial)
+        return result
+
 class PostForm(forms.ModelForm):
+    images = MultipleFileField(required=False)
+
     class Meta:
         model = Post
-        fields = ['title', 'content', 'post_image']
+        fields = ['title', 'content', 'tags']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tags = cleaned_data.get('tags')
+        if tags is None or not tags:
+            self.add_error('tags', "At least one tag is required.")
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit:
+            instance.save()  # Save the post instance first
+
+        # Handle tags AFTER saving the instance
+        if commit:
+            tags = self.cleaned_data.get('tags')
+            if tags:
+                instance.tags.set(*tags)
+
+        return instance  # Don't handle images here; do it in the view
