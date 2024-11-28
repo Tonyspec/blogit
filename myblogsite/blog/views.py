@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, ProfileUser, Like
+from .models import Post, ProfileUser, Like, Comment
 from django.shortcuts import render
 from django.http import JsonResponse
 
@@ -141,4 +141,35 @@ def post_detail(request, pk):
         'post': post,
         'liked': liked,
         'likes_count': post.likes_count()
+    })
+
+@login_required
+def post_list(request):
+    posts = Post.objects.all()
+    
+    if request.method == 'POST' and 'comment_content' in request.POST:
+        post_id = request.POST.get('post_id')
+        content = request.POST.get('comment_content')
+        post = get_object_or_404(Post, id=post_id)
+        Comment.objects.create(post=post, author=request.user, content=content)
+        return redirect('home')
+
+    return render(request, 'home.html', {'posts': posts})
+
+@login_required
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    liked = Like.objects.filter(user=request.user, post=post).exists()
+    comments = post.comments.all()
+
+    if request.method == 'POST' and 'comment_content' in request.POST:
+        content = request.POST.get('comment_content')
+        Comment.objects.create(post=post, author=request.user, content=content)
+        return redirect('post_detail', pk=post.id)
+
+    return render(request, 'blog/post_detail.html', {
+        'post': post,
+        'liked': liked,
+        'likes_count': post.likes_count(),
+        'comments': comments
     })

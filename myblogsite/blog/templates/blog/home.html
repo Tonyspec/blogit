@@ -47,7 +47,12 @@
                                 <span class="like-count">{{ post.likes_count }}</span>
                             </button>
                         </form>
-                        <a href="#" class="action"><i class="fa fa-comment"></i> Comment</a>
+                        <form action="{% url 'home' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="post_id" value="{{ post.id }}">
+                            <input type="text" name="comment_content" placeholder="Add a comment..." />
+                            <button type="submit"><i class="fa fa-comment"></i> Comment</button>
+                        </form>
                         <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
                     </div>
                 </article>
