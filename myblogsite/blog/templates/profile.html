@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/homepage.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}">
 {% endblock %}
@@ -41,7 +42,7 @@
                         <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
                     {% endfor %}
                 </div>
-                <footer class="post-actions">
+                <div class="post-actions">
                     <form action="{% url 'like_post' post.id %}" method="POST" class="like-form">
                         {% csrf_token %}
                         <button type="submit" class="like-button {% if post in request.user.liked_posts %}liked{% endif %}">
@@ -49,9 +50,22 @@
                             <span class="like-count">{{ post.likes_count }}</span>
                         </button>
                     </form>
-                    <a href="#" class="action"><i class="fa fa-comment"></i> Comment</a>
+                    <button class="toggle-comment"><i class="fa fa-comment"></i> {{ post.comments_count }}</button>
+                        <div id="commentPopup" class="comment-popup">
+                            <span class="close-comment">×</span>
+                            <div class="comment-popup-content">
+                                <div class="comment-form">
+                                    <form action="{% url 'post_detail' post.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                                        <input type="text" name="comment_content" placeholder="Add a comment...">
+                                        <button type="submit">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
-                </footer>
+                    </div>
             </article>
         {% endfor %}
     {% else %}
