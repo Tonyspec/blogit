@@ -1,28 +1,19 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Post, ProfileUser, Like, Comment
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .forms import CommentForm, UserSignUpForm
+from .forms import CommentForm, UserSignUpForm, LoginForm 
 
-from django.contrib.auth.forms import UserCreationForm
-from django.views import generic
-from crispy_forms.layout import Layout, Field
-
-from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.contrib import messages
+
 
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import LoginForm
+
 
 
 from .forms import PostForm, PostImage
-
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileEditForm  # Make sure this import reflects your actual form name
 
 def home(request):
     return render(request, 'blog/home.html')
