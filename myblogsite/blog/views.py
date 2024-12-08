@@ -2,7 +2,27 @@ from django.shortcuts import render, get_object_or_404
 from .models import Post, ProfileUser, Like, Comment
 from django.shortcuts import render
 from django.http import JsonResponse
-from .forms import CommentForm
+from .forms import CommentForm, UserSignUpForm
+
+from django.contrib.auth.forms import UserCreationForm
+from django.views import generic
+from crispy_forms.layout import Layout, Field
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib import messages
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from .forms import LoginForm
+
+
+from .forms import PostForm, PostImage
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm, ProfileEditForm  # Make sure this import reflects your actual form name
 
 def home(request):
     return render(request, 'blog/home.html')
@@ -11,6 +31,7 @@ def home(request):
 #     posts = Post.objects.all()
 #     return render(request, 'blog/post_list.html', {'posts': posts})
 
+@login_required(login_url='login')
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     comments = post.comments.all()
@@ -32,14 +53,7 @@ def post_detail(request, pk):
         'form': form,
     })
 
-from django.contrib.auth.forms import UserCreationForm
-from django.views import generic
-from crispy_forms.layout import Layout, Field
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.contrib import messages
-from .forms import UserSignUpForm
 
 def signup_view(request):
     if request.method == 'POST':
@@ -54,10 +68,6 @@ def signup_view(request):
         form = UserSignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-from .forms import LoginForm
 
 def custom_login(request):
     if request.method == 'POST':
@@ -77,9 +87,7 @@ def custom_login(request):
         form = LoginForm()
     return render(request, 'registration/login.html')
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileEditForm  # Make sure this import reflects your actual form name
+
 
 @login_required
 def edit_profile(request):
@@ -108,7 +116,7 @@ def profile(request, username=None):
         'posts': posts
     })
 
-from .forms import PostForm, PostImage
+#CREATE POST
 @login_required
 def create_post(request):
     if request.method == 'POST':
@@ -143,6 +151,7 @@ def home(request):
     posts = Post.objects.all().order_by('-date_posted', '-time_posted')[:10]  # Latest 10 posts
     return render(request, 'blog/home.html', {'posts': posts})
 
+#LIKE POST 
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -164,6 +173,8 @@ def like_post(request, post_id):
     
     # If not an AJAX request, redirect (though this should not occur with AJAX setup)
     return redirect('post_detail', pk=post_id)
+
+
 @login_required
 def post_list(request):
     posts = Post.objects.all()
@@ -178,24 +189,7 @@ def post_list(request):
 
     return render(request, 'home.html', {'posts': posts})
 
-# @login_required
-# def post_detail(request, pk):
-#     post = get_object_or_404(Post, pk=pk)
-#     liked = Like.objects.filter(user=request.user, post=post).exists()
-#     comments = post.comments.all()
-
-#     if request.method == 'POST' and 'comment_content' in request.POST:
-#         content = request.POST.get('comment_content')
-#         Comment.objects.create(post=post, author=request.user, content=content)
-#         return redirect('post_detail', pk=post.id)
-
-#     return render(request, 'blog/post_detail.html', {
-#         'post': post,
-#         'liked': liked,
-#         'likes_count': post.likes_count(),
-#         'comments': comments
-#     })
-
+#LIKE COMMENT
 def like_comment(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     if request.user in comment.likes.all():
