@@ -61,13 +61,18 @@ class Like(models.Model):
     def __str__(self):
         return f"{self.user.username} likes {self.post.title}"
     
+
+
 class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='comment_likes', blank=True)
 
     def __str__(self):
-        return f"Comment by {self.author.username} on {self.post.title}"
+        return f'Comment by {self.author.username} on {self.post.title}'
 
-
+    @property
+    def likes_count(self):
+        return self.likes.count()

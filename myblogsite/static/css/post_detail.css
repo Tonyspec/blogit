@@ -117,3 +117,7 @@
 .toggle-comment:hover {
     background-color: #45a049;
 }
+
+.post-detail img {
+    max-width: 100%;
+}

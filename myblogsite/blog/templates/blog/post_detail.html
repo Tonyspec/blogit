@@ -19,7 +19,7 @@
     
     {% for image in post.images.all %}
                 <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
-            {% endfor %}
+    {% endfor %}
 
     <div class="post-meta">
         <small>Posted on {{ post.date_posted }} at {{ post.time_posted }}</small>
@@ -35,20 +35,17 @@
         <a href="#" class="action"><i class="fa fa-comment"></i> Comment</a>
         <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
     </div>
-    <div class="comment-section">
-        <h3>Comments</h3>
+    <div id="comments">
+        <h3>Comments ({{ post.comments_count }})</h3>
         {% for comment in comments %}
-            <div class="comment">
-                <strong>{{ comment.author.username }}</strong>: {{ comment.content }} - {{ comment.created_at }}
-            </div>
+            <p>{{ comment.author.username }}: {{ comment.content }} - {{ comment.created_date }} 
+               <i class="fa fa-thumbs-up">{{ comment.likes_count }}</i></p>
         {% endfor %}
-        <div class="comment-form hidden">
-            <form action="{% url 'post_detail' post.pk %}" method="post">
-                {% csrf_token %}
-                <input type="text" name="comment_content" placeholder="Add your comment...">
-                <button type="submit">Comment</button>
-            </form>
-        </div>
+        <form method="post" action="{% url 'post_detail' post.pk %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit Comment</button>
+        </form>
     </div>
 
 

@@ -50,20 +50,18 @@
                             <span class="like-count">{{ post.likes_count }}</span>
                         </button>
                     </form>
-                    <button class="toggle-comment"><i class="fa fa-comment"></i> {{ post.comments_count }}</button>
-                        <div id="commentPopup" class="comment-popup">
+                    <button class="toggle-comment" data-post-id="{{ post.id }}"><i class="fa fa-comment"></i> {{ post.comments_count }}</button>
+                    <div id="commentModal" class="modal">
+                        <div class="modal-content">
                             <span class="close-comment">×</span>
-                            <div class="comment-popup-content">
-                                <div class="comment-form">
-                                    <form action="{% url 'post_detail' post.pk %}" method="post">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="post_id" value="{{ post.id }}">
-                                        <input type="text" name="comment_content" placeholder="Add a comment...">
-                                        <button type="submit">Submit</button>
-                                    </form>
-                                </div>
-                            </div>
+                            <form method="post" action="" data-action="{% url 'post_detail' post.pk %}">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <textarea name="content" placeholder="Add a comment..."></textarea>
+                                <button type="submit">Submit Comment</button>
+                            </form>
                         </div>
+                    </div>
                     <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
                     </div>
             </article>
@@ -81,4 +79,5 @@
 
 {% block extra_js %}
     <script src="{% static 'js/like_post.js' %}"></script>
+    <script src="{% static 'js/extra.js' %}"></script>
 {% endblock %}

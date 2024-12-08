@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import ProfileUser, Post, PostImage
+from .models import ProfileUser, Post, PostImage, Comment
 
 class UserSignUpForm(UserCreationForm):
     name = forms.CharField(max_length=150, required=False)
@@ -78,3 +78,8 @@ class PostForm(forms.ModelForm):
                 instance.tags.set(*tags)
 
         return instance  # Don't handle images here; do it in the view
+    
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('content',)
