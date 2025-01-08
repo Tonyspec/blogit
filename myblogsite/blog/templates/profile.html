@@ -71,8 +71,8 @@
     {% endif %}
 </div>
 
-{% if user == user_profile.user %}
-    <a href="{% url 'edit_profile' %}" class="btn-edit-profile">Edit Profile</a>
+{% if user == user_profile %}
+    <a href="{% url 'edit_profile' user_profile.username %}" class="btn-edit-profile">Edit Profile</a>
 {% endif %}
 
 {% endblock %}

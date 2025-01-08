@@ -143,3 +143,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = 'home'
+
+
+#EMAILS
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.me.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'news_nest@icloud.com'
+EMAIL_HOST_PASSWORD = 'pzbj-ovxw-mtxs-jrmq'  # Note: Not your regular password but an app-specific password
