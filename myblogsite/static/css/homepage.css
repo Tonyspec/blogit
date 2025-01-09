@@ -1,284 +1,257 @@
-body {
-    font-family: 'Roboto', Arial, sans-serif; /* Changed to Roboto for a modern look */
-    line-height: 1.6;
+/* Base Styles */
+:root {
+    --bg-color: #1a1a1a; /* Dark background */
+    --text-color: #f0f0f0; /* Light text color */
+    --primary-color: #00B7FF; /* Neon blue accent */
+    --secondary-color: #00FF7F; /* Bright green for highlights */
+    --shadow-color: rgba(0, 183, 255, 0.2); /* Neon shadow for elements */
+  }
+  
+  body {
+    font-family: 'Space Mono', monospace; /* Modern, techy font */
+    background: var(--bg-color);
+    color: var(--text-color);
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
-}
-
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-top: 80px;
-}
-
-header {
-    background: #1DA1F2;
-    color: white;
-    position: fixed;
+    overflow-x: hidden;
+  }
+  
+  /* Header Styles */
+  header {
+    padding: 1rem;
+    background: linear-gradient(to right, var(--bg-color), rgba(0, 0, 0, 0.2));
+    backdrop-filter: blur(5px);
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
     z-index: 1000;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding-top: 1em;
-    display: flex;
-    justify-content: space-between; /* Space between h1 and nav */
-    align-items: center; /* Align items vertically in the center */
-}
-
-header h1 {
-    font-size: 2em;
+  }
+  
+  header h1 {
+    color: var(--primary-color);
+    font-size: 2rem;
     margin: 0;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin-left: 1em;
-    margin-top: 0;
-    margin-bottom: 0.5em;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-}
-
-header nav {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-right: 20px;
-}
-
-header nav a {
-    color: white;
+    text-shadow: 0 0 10px var(--primary-color);
+  }
+  
+  header nav a {
+    color: var(--text-color);
     text-decoration: none;
-    margin-left: 20px;
-    font-size: 16px;
-    transition: opacity 0.3s ease;
-}
-
-header nav a:hover {
-    opacity: 0.8;
-}
-
-/* Make the container in the header use flexbox */
-.site-header .container {
-    display: flex;
-    
-    padding-top: 1em; /* Adjust padding as needed */
-    padding-bottom: 1em;
-}
-
-/* Adjust h1 to fit within the flex container */
-.site-header h1 {
-    
-}
-
-/* Ensure nav items are properly aligned */
-.site-header .site-nav {
-    display: flex;
-    align-items: center; /* Align nav items vertically */
-}
-
-
-.blog-section h2 {
-    color: #1DA1F2;
-    font-size: 24px;
-    margin-bottom: 20px;
-    font-weight: 500;
-}
-
-.btn-create-post {
+    margin: 0 15px;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+  }
+  
+  header nav a:hover {
+    color: var(--secondary-color);
+  }
+  
+  /* General Post Styles */
+  .post, .post-detail {
+    background: rgba(25, 25, 25, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 1rem 0;
+    padding: 2rem;
+    box-shadow: 0 8px 15px var(--shadow-color);
+    transition: all 0.3s ease;
+  }
+  
+  .post:hover, .post-detail:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px var(--shadow-color);
+  }
+  
+  .post h3, .post-detail h2 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* Tags */
+  .tags a {
     display: inline-block;
-    background-color: #1DA1F2;
-    color: white;
-    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
     text-decoration: none;
-    border-radius: 25px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    transition: background-color 0.3s ease;
-}
-
-.btn-create-post:hover {
-    background-color: #0c84d4;
-}
-/* Adjust for images in posts on the homepage */
-.post img {
-    max-width: 100%;  /* Ensures images do not exceed their container */
-    height: auto;     /* Maintain aspect ratio */
-    display: block;   /* Removes bottom space added by inline-block elements */
-    margin: 10px auto; /* Centers the image if it's smaller than the post width */
-    border-radius: 8px; /* Rounded corners for aesthetic */
-}
-footer {
+    color: var(--text-color);
+    margin: 0 5px 5px 0;
+    transition: background 0.3s ease;
+  }
+  
+  .tags a:hover {
+    background: var(--secondary-color);
+    color: var(--bg-color);
+  }
+  
+  /* Images */
+  .post-images img, .post-detail img {
+    max-width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0, 183, 255, 0.5);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+  }
+  
+  .post-images img.loaded, .post-detail img.loaded {
+    opacity: 1;
+  }
+  
+  /* Like Button */
+  .like-button {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .like-button:hover, .like-button.liked {
+    color: var(--secondary-color);
+  }
+  
+  /* Comments */
+  #comments p {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Profile Styles */
+  .profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 20px var(--shadow-color);
+    transition: transform 0.3s ease;
+  }
+  
+  .profile-image:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Footer */
+  footer {
+    background: rgba(25, 25, 25, 0.8);
+    color: var(--text-color);
     text-align: center;
     padding: 20px 0;
-    background: #2c3e50;
-    color: #ecf0f1;
-    width: 100%;
-    bottom: 0;
-    font-size: 0.9em;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-}
-.hidden {
-    display: none;
-}
-
-/* Like Button Styling */
-.like-button {
-    background: none; /* This removes any background color */
-    border: none; /* Removes border */
-    color: #1DA1F2; /* Blue color for unfilled heart */
-    font-size: 24px; /* Larger font size for better visibility */
-    padding: 10px;
-    cursor: pointer;
-    transition: color 0.3s ease; /* Smooth transition for color change */
-}
-
-.like-button.liked {
-    color: red; /* Red color when liked */
-}
-
-.like-button:hover {
-    color: #0c84d4; /* Darker blue on hover */
-}
-
-/* Comment Button Styling to Match Like Button */
-.toggle-comment {
-    background: transparent;
-border: none;
-padding: 5px 10px;
-cursor: pointer;
-color: #657786;
-font-size: 0.9em;
-text-decoration: none;
-display: inline-flex;
-align-items: center;
-border-radius: 20px;
-transition: all 0.3s ease;
-}
-
-.toggle-comment:hover {
-    color: #0c84d4; /* Darker blue on hover */
-}
-
-/*  */
-.post-images {
-    display: flex;
-    flex-wrap: wrap; /* Allows images to wrap if more than 2 */
-    gap: 10px; /* Space between images */
-    justify-content: center; /* Center images if less than 2 */
-}
-
-.post-images img {
-    max-width: 100%; /* Ensure images don't exceed their container */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 8px; /* Rounded corners */
-    object-fit: cover; /* If you want images to cover their container */
-    flex-grow: 1; /* Allow images to grow if space is available */
-    flex-basis: calc(50% - 10px); /* Half width minus gap for two images */
-    min-width: 150px; /* Minimum width for images */
-}
-
-/* For screens smaller than 600px, make images stack vertically */
-@media (max-width: 600px) {
-    .post-images img {
-        flex-basis: 100%;
-    }
-}
-
-/* Basic modal styling */
-#commentModal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content/Box */
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-    max-width: 600px; /* Twitter-like modal width */
-    border-radius: 14px; /* Soft edges */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Twitter-like subtle shadow */
-}
-
-/* The Close Button */
-.close-comment {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close-comment:hover,
-.close-comment:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Form styling */
-#commentModal form {
     margin-top: 20px;
-}
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .post, .post-detail {
+      padding: 1rem;
+    }
+  
+    header h1 {
+      font-size: 1.5rem;
+    }
+  
+    header nav a {
+      font-size: 0.9rem;
+    }
+  }
 
-#commentModal form textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
+  /* Comments Section */
+#comments {
+    margin-top: 20px;
+  }
+  
+  #comments h3 {
+    color: var(--primary-color);
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--secondary-color);
+    padding-bottom: 5px;
+  }
+  
+  #comments p {
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
-    box-sizing: border-box;
-    resize: vertical; /* Allow vertical resizing */
+    padding: 15px;
     margin-bottom: 10px;
-}
-
-#commentModal form button {
-    background-color: #1DA1F2; /* Twitter blue */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 20px; /* Rounded button */
-}
-
-#commentModal form button:hover {
-    background-color: #0c84d6;
-}
-
-/* Styling for form elements */
-#commentModal form p {
-    margin-bottom: 0;
-}
-
-#commentModal form label {
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  #comments p:hover {
+    box-shadow: 0 6px 12px rgba(0, 183, 255, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  /* Comment Author */
+  #comments p::before {
+    content: attr(data-author);
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: var(--secondary-color);
+    color: var(--bg-color);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+  }
+  
+  /* Comment Content */
+  #comments p span.comment-content {
     display: block;
-    margin-bottom: 5px;
-}
-
-#commentModal form input[type="text"],
-#commentModal form input[type="email"] {
+    margin-top: 5px;
+  }
+  
+  /* Comment Metadata */
+  #comments p span.comment-metadata {
+    display: block;
+    font-size: 0.8em;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+  
+  /* Comment Like */
+  #comments p i.fa-thumbs-up {
+    color: var(--secondary-color);
+    margin-left: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  #comments p i.fa-thumbs-up:hover {
+    color: var(--primary-color);
+  }
+  
+  /* Comment Form */
+  form[action="{% url 'post_detail' post.pk %}"] {
+    margin-top: 20px;
+  }
+  
+  form[action="{% url 'post_detail' post.pk %}"] textarea {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    color: var(--text-color);
+    resize: vertical;
     margin-bottom: 10px;
-}
+  }
+  
+  form[action="{% url 'post_detail' post.pk %}"] button {
+    background: var(--primary-color);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: var(--bg-color);
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  form[action="{% url 'post_detail' post.pk %}"] button:hover {
+    background: var(--secondary-color);
+  }

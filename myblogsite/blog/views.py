@@ -153,6 +153,7 @@ def create_post(request):
     else:
         form = PostForm()
     return render(request, 'create_post.html', {'form': form})
+
 from taggit.models import Tag
 
 def tag_detail(request, tag_slug):

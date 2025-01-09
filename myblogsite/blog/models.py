@@ -25,12 +25,6 @@ class PostImage(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='post_images/')
 
-class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=150, unique=True)
-
-    def __str__(self):
-        return self.name
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
@@ -39,7 +33,6 @@ class Post(models.Model):
     time_posted = models.TimeField(default=timezone.now)
     author = models.ForeignKey('blog.ProfileUser', on_delete=models.CASCADE)
     tags = TaggableManager()  # Tags for the post, at least one is required
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts', default=1)
 
 
     def likes_count(self):

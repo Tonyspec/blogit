@@ -38,6 +38,7 @@ class ProfileForm(forms.ModelForm):
 
 from django import forms
 from .models import Post
+from taggit.forms import TagField
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
@@ -54,6 +55,7 @@ class MultipleFileField(forms.FileField):
 
 class PostForm(forms.ModelForm):
     images = MultipleFileField(required=False)
+    tags = TagField(required=True)
 
     class Meta:
         model = Post
@@ -61,6 +63,7 @@ class PostForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        
         tags = cleaned_data.get('tags')
         if tags is None or not tags:
             self.add_error('tags', "At least one tag is required.")
