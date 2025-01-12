@@ -1,5 +1,13 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
+{% block extra_head %}
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/post_detail.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}"> {% endcomment %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+
+
+{% endblock %}
 {% block content %}
     <div class="search-page">
         <h1>Search</h1>
@@ -10,14 +18,29 @@
 
         {% if query %}
             <h2>Results for "{{ query }}"</h2>
-            {% if results %}
-                <ul>
-                {% for result in results %}
-                    <li>
-                        <a href="{% url 'post_detail' result.id %}">{{ result.title }}</a> by {{ result.author.username }}
-                    </li>
-                {% endfor %}
-                </ul>
+
+            {% if post_results or user_results %}
+                {% if post_results %}
+                    <h3>Posts</h3>
+                    <ul>
+                    {% for result in post_results %}
+                        <li>
+                            <a href="{% url 'post_detail' result.id %}">{{ result.title }}</a> by {{ result.author.username }}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if user_results %}
+                    <h3>Users</h3>
+                    <ul>
+                    {% for user in user_results %}
+                        <li>
+                            <a href="{% url 'profile' user.username %}">{{ user.username }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
             {% else %}
                 <p>No results found.</p>
             {% endif %}

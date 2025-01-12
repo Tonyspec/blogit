@@ -64,7 +64,7 @@
                             <a href="{% url 'tag_detail' tag.slug %}" class="tag">#{{ tag.name }}</a>
                         {% endfor %}
                     </div>
-                    <div class="post-content">{{ post.content }}</div>
+                    <div class="post-content">{{ post.content|truncatechars:200 }}...</div>
                     <div class="post-images">
                         {% for image in post.images.all %}
                             <img src="{{ image.image.url }}" alt="{{ image.image.name }}">

@@ -274,21 +274,31 @@ def all_tags(request):
 from django.db.models import Q
 def search(request):
     query = None
-    results = []
+    post_results = []
+    user_results = []
     form = SearchForm()
 
     if 'query' in request.GET:
         form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            results = Post.objects.filter(
+            
+            # Search for posts
+            post_results = Post.objects.filter(
                 Q(title__icontains=query) | 
-                Q(content__icontains=query) | 
-                Q(author__username__icontains=query)
+                Q(content__icontains=query)
+            )
+
+            # Search for users
+            user_results = ProfileUser.objects.filter(
+                Q(username__icontains=query) | 
+                Q(first_name__icontains=query) | 
+                Q(last_name__icontains=query)
             )
 
     return render(request, 'search.html', {
         'form': form,
         'query': query,
-        'results': results,
+        'post_results': post_results,
+        'user_results': user_results,
     })
