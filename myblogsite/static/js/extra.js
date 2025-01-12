@@ -1,29 +1,119 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var modal = document.getElementById("commentModal");
-    var btns = document.getElementsByClassName("toggle-comment");
-    var span = document.getElementsByClassName("close-comment")[0];
+// document.addEventListener('DOMContentLoaded', function() {
+//     var modal = document.getElementById("commentModal");
+//     var btns = document.getElementsByClassName("toggle-comment");
+//     var span = document.getElementsByClassName("close-comment")[0];
 
-    for (var i = 0; i < btns.length; i++) {
-        btns[i].onclick = function(e) {
+//     for (var i = 0; i < btns.length; i++) {
+//         btns[i].onclick = function(e) {
+//             e.preventDefault();
+//             var postId = this.getAttribute('data-post-id');
+            
+//             // Update form action to point to the correct post detail
+//             var form = modal.querySelector('form');
+//             form.action = form.getAttribute('data-action');
+            
+//             // Show modal
+//             modal.style.display = "block";
+//         }
+//     }
+
+//     span.onclick = function() {
+//         modal.style.display = "none";
+//     }
+
+//     window.onclick = function(event) {
+//         if (event.target == modal) {
+//             modal.style.display = "none";
+//         }
+//     }
+// });
+
+document.addEventListener('DOMContentLoaded', function() {
+    let modal = document.getElementById("commentModal");
+    let commentsContainer = document.getElementById("commentsContainer");
+    let btn = document.querySelectorAll(".comment-btn");
+    let span = document.getElementsByClassName("close")[0];
+    let form = document.getElementById("newCommentForm");
+
+    btn.forEach(button => {
+        button.onclick = function(e) {
             e.preventDefault();
-            var postId = this.getAttribute('data-post-id');
-            
-            // Update form action to point to the correct post detail
-            var form = modal.querySelector('form');
-            form.action = form.getAttribute('data-action');
-            
-            // Show modal
             modal.style.display = "block";
+            let postId = this.getAttribute('data-post-id');
+            form.setAttribute('data-post-id', postId); // Set post ID for form
+            fetchComments(postId);
         }
-    }
+    });
 
     span.onclick = function() {
         modal.style.display = "none";
-    }
+    };
 
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let postId = this.getAttribute('data-post-id');
+        let commentText = this.elements['comment_text'].value;
+        
+        console.log('Comment Text:', commentText); // Log the comment text
+        
+        if (commentText.trim() === '') {
+            console.warn('Comment is empty after trimming whitespace.');
+            return;
+        }
+    
+        fetch(`/blog/submit_comment/${postId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ 'comment_text': commentText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.elements['comment_text'].value = '';
+                fetchComments(postId);
+            } else {
+                console.error('Error submitting comment:', data.message);
+            }
+        });
+    });
+
+    function fetchComments(postId) {
+        
+
+        fetch(`/blog/fetch_comments/${postId}/`)
+            .then(response => response.json())
+            .then(data => {
+                let commentsHTML = '';
+                data.forEach(comment => {
+                    commentsHTML += `<p>${comment.author.username}: ${comment.content} - ${comment.created_date}</p>`;
+                });
+                commentsContainer.innerHTML = commentsHTML;
+            });
+    }
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 });

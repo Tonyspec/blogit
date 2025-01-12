@@ -76,13 +76,26 @@
                                 <span class="like-count">{{ post.likes_count }}</span>
                             </button>
                         </form>
-                        <span class="comment-count"><i class="fa fa-comment"></i> {{ post.comments_count }}</span>
+                        <a href="#" class="comment-btn" data-post-id="{{ post.id }}"><i class="fa fa-comment"></i> {{ post.comments_count }}</a>
                         <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
                     </div>
                 </article>
             {% empty %}
                 <p>No tweets yet. Check back soon!</p>
             {% endfor %}
+            <!-- Modal for comments -->
+            <div id="commentModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">×</span>
+                    <h2>Comments for Post</h2>
+                    <div id="commentsContainer"></div>
+                    <form id="newCommentForm" data-post-id="{{ post.id }}">
+                        {% csrf_token %}
+                        <textarea name="comment_text" placeholder="Write your comment..." required></textarea>
+                        <button type="submit">Submit Comment</button>
+                    </form>
+                </div>
+            </div>
         </section>
     </div>
 

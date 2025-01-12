@@ -222,3 +222,29 @@ def like_comment(request, comment_id):
 
     # Redirect back to the referrer if available, otherwise to post detail
     return redirect(request.META.get('HTTP_REFERER') or reverse('post_detail', kwargs={'post_id': comment.post.id}))
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET, require_POST
+
+@require_GET
+def fetch_comments(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comments = Comment.objects.filter(post=post)
+    data = [{'author': {'username': comment.author.username}, 'content': comment.content, 'created_date': comment.created_date} for comment in comments]
+    return JsonResponse(data, safe=False)
+
+import json 
+@login_required
+@require_POST
+def submit_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    data = json.loads(request.body)
+    comment_text = data.get('comment_text', '').strip()
+    if comment_text:
+        Comment.objects.create(
+            post=post,
+            author=request.user,
+            content=comment_text
+        )
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': 'Comment text is required.'})
