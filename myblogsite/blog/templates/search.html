@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="search-page">
+        <h1>Search</h1>
+        <form method="get" action="{% url 'search' %}">
+            {{ form.as_p }}
+            <button type="submit">Search</button>
+        </form>
+
+        {% if query %}
+            <h2>Results for "{{ query }}"</h2>
+            {% if results %}
+                <ul>
+                {% for result in results %}
+                    <li>
+                        <a href="{% url 'post_detail' result.id %}">{{ result.title }}</a> by {{ result.author.username }}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No results found.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}
