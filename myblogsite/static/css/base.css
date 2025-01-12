@@ -672,3 +672,21 @@ a:visited {
 .search-page a:hover {
   color: var(--secondary-color);
 }
+
+.logo-container {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.logo-image {
+  max-width: 6em; /* Adjust size as needed */
+  height: auto;
+  vertical-align: middle;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .logo-image {
+      max-width: 100px; /* Smaller logo for mobile */
+  }
+}

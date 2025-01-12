@@ -26,7 +26,9 @@
             </div>
         </nav>
         <div class="logo-container">
-            <h1><a href="{% url 'home' %}">FolksNews</a></h1>
+            <a href="{% url 'home' %}">  <!-- Assuming 'home' is your home page URL -->
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
+            </a>
         </div>
         <div class="profile-container">
             {% if user.is_authenticated %}
@@ -52,7 +54,7 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; 2024 BDBA. All rights reserved.</p>
+            <p>&copy; 2024 VoxPop. All rights reserved.</p>
         </div>
     </footer>
 

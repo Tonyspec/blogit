@@ -24,7 +24,9 @@
             </div>
         </nav>
         <div class="logo-container">
-            <h1>FolksNews</h1>
+            <a href="{% url 'home' %}">  <!-- Assuming 'home' is your home page URL -->
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
+            </a>
         </div>
         <div class="profile-container">
             {% if user.is_authenticated %}
@@ -100,7 +102,7 @@
     </div>
 
     <footer>
-        <p>© 2024 BDBA. All rights reserved.</p>
+        <p>© 2024 VoxPop. All rights reserved.</p>
     </footer>
     <script src="{% static 'js/like_post.js' %}"></script>
     <script>
