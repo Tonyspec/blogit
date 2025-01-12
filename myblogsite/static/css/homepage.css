@@ -437,9 +437,11 @@
     }
   }
 
-  a:visited {
-    color: inherit; /* This will make the visited link the same color as the unvisited one */
-    text-decoration: none; /* Removes underline if you don't want it */
+  a:link { 
+    color: #00B7FF; /* or any color for unvisited links */
+}
+a:visited {
+    color: #00B7FF; /* same color for visited links */
 }
 
 .home-heading{
