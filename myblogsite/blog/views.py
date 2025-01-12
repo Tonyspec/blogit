@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm
+from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm, SearchForm
 
 from django.contrib.auth import login
 
@@ -270,3 +270,25 @@ def all_tags(request):
         tag.size = 1 + (tag.size / max(tag.size for tag in tags)) * 2  # Scale size between 1em and 3em
     
     return render(request, 'tags.html', {'tags': tags})
+
+from django.db.models import Q
+def search(request):
+    query = None
+    results = []
+    form = SearchForm()
+
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = Post.objects.filter(
+                Q(title__icontains=query) | 
+                Q(content__icontains=query) | 
+                Q(author__username__icontains=query)
+            )
+
+    return render(request, 'search.html', {
+        'form': form,
+        'query': query,
+        'results': results,
+    })
