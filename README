@@ -1,1 +1,2 @@
-This is a READM me file for the Django blog application
+Web application that allows users to post their articles and follow topics that they find interesting. 
+Built on Django with JS, HTML and CSS
