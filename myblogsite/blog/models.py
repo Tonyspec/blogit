@@ -25,6 +25,14 @@ class ProfileUser(AbstractUser):
     @cached_property
     def post_count(self):
         return Post.objects.filter(author=self).count()
+    
+    @property
+    def followers_count(self):
+        return self.followers.count()
+
+    @property
+    def following_count(self):
+        return self.following.count()
 
 class PostImage(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='images')
@@ -83,3 +91,14 @@ class Comment(models.Model):
     @property
     def likes_count(self):
         return self.likes.count()
+    
+class Follow(models.Model):
+    follower = models.ForeignKey(get_user_model(), related_name='following', on_delete=models.CASCADE)
+    followed = models.ForeignKey(get_user_model(), related_name='followers', on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('follower', 'followed')
+
+    def __str__(self):
+        return f'{self.follower} follows {self.followed}'

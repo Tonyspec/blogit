@@ -18,4 +18,6 @@ urlpatterns = [
     path('comment/<int:comment_id>/like/', views.like_comment, name='like_comment'),
     path('search/', views.placeholder_view, name='search'),
     path('tags/', views.placeholder_view, name='tags'),
+    path('profile/<str:username>/follow/', views.follow, name='follow'),
+    path('profile/<str:username>/unfollow/', views.unfollow, name='unfollow')
 ]

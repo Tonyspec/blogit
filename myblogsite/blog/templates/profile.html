@@ -21,6 +21,20 @@
         {% if user_profile.email %}
             <p>Email: {{ user_profile.email }}</p>
         {% endif %}
+        {% if user_profile != request.user %}
+            {% if is_following %}
+                <form action="{% url 'unfollow' username=user_profile.username %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="unfollow-button">Unfollow</button>
+                </form>
+            {% else %}
+                <form action="{% url 'follow' username=user_profile.username %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="follow-button">Follow</button>
+                </form>
+            {% endif %}
+        {% endif %}
+        <p>Followers: {{ followers_count }} | Following: {{ following_count }}</p>
         {%if post_count > 0%}
             <p>Number of Posts: {{ post_count }}</p>
         {%else%}

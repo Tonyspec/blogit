@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, ProfileUser, Like, Comment
+from .models import Post, ProfileUser, Like, Comment, Follow
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm
@@ -20,10 +20,6 @@ def home(request):
 
 def placeholder_view(request):
     return render(request, 'placeholder.html')
-
-# def post_list(request):
-#     posts = Post.objects.all()
-#     return render(request, 'blog/post_list.html', {'posts': posts})
 
 @login_required(login_url='login')
 def post_detail(request, pk):
@@ -47,13 +43,6 @@ def post_detail(request, pk):
         'form': form,
     })
 
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.core.mail import EmailMultiAlternatives
-from django.conf import settings
-
-
-
 def signup_view(request):
     if request.method == 'POST':
         form = UserSignUpForm(request.POST, request.FILES)
@@ -66,7 +55,6 @@ def signup_view(request):
     else:
         form = UserSignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
-
 
 def custom_login(request):
     if request.method == 'POST':
@@ -86,10 +74,6 @@ def custom_login(request):
         form = LoginForm()
     return render(request, 'registration/login.html')
 
-
-
-
-
 @login_required(login_url='login')
 def profile(request, username=None):
     if username is None:
@@ -99,12 +83,16 @@ def profile(request, username=None):
     
     # This should fetch posts for the correct user
     posts = Post.objects.filter(author=user).order_by('-date_posted', '-time_posted')
+    is_following = Follow.objects.filter(follower=request.user, followed=user).exists() if request.user.is_authenticated else False
     post_count = user.post_count
     return render(request, 'profile.html', {
         'user_profile': user,
         'posts': posts,
         'username': username,
-        'post_count': post_count
+        'post_count': post_count,
+        'followers_count': user.followers_count,
+        'following_count': user.following_count,
+        'is_following': is_following
     })
 
 @login_required
@@ -206,3 +194,15 @@ def like_comment(request, comment_id):
     else:
         comment.likes.add(request.user)
     return redirect('post_detail', pk=comment.post.pk)
+
+@login_required
+def follow(request, username):
+    user_to_follow = get_object_or_404(ProfileUser, username=username)
+    Follow.objects.get_or_create(follower=request.user, followed=user_to_follow)
+    return redirect('profile', username=username)
+
+@login_required
+def unfollow(request, username):
+    user_to_unfollow = get_object_or_404(ProfileUser, username=username)
+    Follow.objects.filter(follower=request.user, followed=user_to_unfollow).delete()
+    return redirect('profile', username=username)

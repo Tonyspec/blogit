@@ -379,3 +379,43 @@
 .signup-container{
   padding: 1em;
 }
+
+/* Follow and Unfollow Buttons */
+.follow-button, .unfollow-button {
+  background: none;
+  border: 1px solid var(--primary-color);
+  color: var(--text-color);
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Space Mono', monospace;
+}
+
+.follow-button {
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  color: var(--bg-color);
+  border: none;
+}
+
+.follow-button:hover {
+  background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+  box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.unfollow-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
+.unfollow-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--secondary-color);
+  box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+/* Specific styles if needed for different contexts */
+.profile-header .follow-button, .profile-header .unfollow-button {
+  margin: 10px 0;
+}
