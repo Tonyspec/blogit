@@ -2,8 +2,7 @@
 {% load static %}
 
 {% block extra_head %}
-{% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/post_detail.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}"> {% endcomment %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/post_detail.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -32,14 +31,19 @@
                 <span class="like-count">{{ post.likes_count }}</span>
             </button>
         </form>
-        <a href="#" class="action"><i class="fa fa-comment"></i> Comment</a>
         <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
     </div>
     <div id="comments">
         <h3>Comments ({{ post.comments_count }})</h3>
         {% for comment in comments %}
-            <p>{{ comment.author.username }}: {{ comment.content }} - {{ comment.created_date }} 
-               <i class="fa fa-thumbs-up">{{ comment.likes_count }}</i></p>
+            <p>{{ comment.author.username }}: {{ comment.content }} - {{ comment.created_date }}</p>
+               <form action="{% url 'like_comment' comment.id %}" method="POST" style="display:inline;">
+                   {% csrf_token %}
+                   <button type="submit" class="comment-like-button {% if comment in request.user.comment_likes %}liked{% endif %}">
+                       <i class="fa fa-thumbs-up"></i>
+                   </button>
+               </form>
+               <span class="comment-like-count">{{ comment.likes_count }}</span>
         {% endfor %}
         <form method="post" action="{% url 'post_detail' post.pk %}">
             {% csrf_token %}

@@ -288,18 +288,6 @@
     transform: translateY(-2px);
   }
   
-  /* Comment Author */
-  #comments p::before {
-    content: attr(data-author);
-    position: absolute;
-    top: -10px;
-    left: 10px;
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-size: 0.8em;
-  }
   
   /* Comment Content */
   #comments p span.comment-content {

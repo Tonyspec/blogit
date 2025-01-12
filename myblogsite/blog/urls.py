@@ -19,5 +19,6 @@ urlpatterns = [
     path('search/', views.placeholder_view, name='search'),
     path('tags/', views.placeholder_view, name='tags'),
     path('profile/<str:username>/follow/', views.follow, name='follow'),
-    path('profile/<str:username>/unfollow/', views.unfollow, name='unfollow')
+    path('profile/<str:username>/unfollow/', views.unfollow, name='unfollow'),
+    path('like_comment/<int:comment_id>/', views.like_comment, name='like_comment'),
 ]

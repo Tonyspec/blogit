@@ -60,6 +60,7 @@ class Post(models.Model):
     def get_absolute_url(self):
         return f"/post/{self.pk}/"
     
+    
 # In your models.py
 
 from django.db import models
@@ -90,7 +91,7 @@ class Comment(models.Model):
 
     @property
     def likes_count(self):
-        return self.likes.count()
+        return self.commentlike_set.count()
     
 class Follow(models.Model):
     follower = models.ForeignKey(get_user_model(), related_name='following', on_delete=models.CASCADE)
@@ -102,3 +103,11 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'{self.follower} follows {self.followed}'
+    
+class CommentLike(models.Model):
+    comment = models.ForeignKey('Comment', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('comment', 'user')

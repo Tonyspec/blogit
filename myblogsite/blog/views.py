@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, ProfileUser, Like, Comment, Follow
+from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm
@@ -206,3 +206,19 @@ def unfollow(request, username):
     user_to_unfollow = get_object_or_404(ProfileUser, username=username)
     Follow.objects.filter(follower=request.user, followed=user_to_unfollow).delete()
     return redirect('profile', username=username)
+
+
+@login_required
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    user = request.user
+
+    if CommentLike.objects.filter(comment=comment, user=user).exists():
+        # User already likes this comment, so unlike it
+        CommentLike.objects.filter(comment=comment, user=user).delete()
+    else:
+        # User does not like this comment, so like it
+        CommentLike.objects.create(comment=comment, user=user)
+
+    # Redirect back to the referrer if available, otherwise to post detail
+    return redirect(request.META.get('HTTP_REFERER') or reverse('post_detail', kwargs={'post_id': comment.post.id}))
