@@ -16,7 +16,13 @@
     overflow-x: hidden;
   }
   
-  /* Header */
+
+  a:link { 
+    color: #00B7FF; /* or any color for unvisited links */
+}
+a:visited {
+    color: #00B7FF; /* same color for visited links */
+}
 .site-header {
     display: flex;
     justify-content: space-between;

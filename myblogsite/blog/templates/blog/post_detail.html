@@ -31,7 +31,6 @@
                 <span class="like-count">{{ post.likes_count }}</span>
             </button>
         </form>
-        <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
     </div>
     <div id="comments">
         <h3>Comments ({{ post.comments_count }})</h3>
