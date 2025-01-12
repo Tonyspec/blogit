@@ -10,23 +10,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <header>
-        <h1>FolksNews</h1>
-        <nav>
+    <header class="site-header">
+        <nav class="sidebar-menu">
+            <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
+            <div id="sidebar" class="sidebar">
+                <button id="collapse-sidebar" class="collapse-button"><i class="fas fa-times"></i></button>
+                <ul>
+                    <li><a href="{% url 'search' %}">Search</a></li>
+                    <li><a href="{% url 'tags' %}">Tags</a></li>
+                    <li><a href="{% url 'profile_self' %}">Profile</a></li>
+                    <li><a href="{% url 'create_post' %}">Post</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="logo-container">
+            <h1>FolksNews</h1>
+        </div>
+        <div class="profile-container">
             {% if user.is_authenticated %}
                 <a href="{% url 'profile_self' %}" class="profile-link" title="Profile">
                     <i class="fa-solid fa-user-circle"></i>
                 </a>
+                <form action="{% url 'logout' %}" method="POST" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
             {% else %}
-                <a href="{% url 'login' %}" style="color: white; text-decoration: none; font-size: 16px;">Login</a>
+                <a href="{% url 'login' %}" class="login-link">Login</a>
             {% endif %}
-        </nav>
+        </div>
     </header>
+
 
     <div class="container">
         <section class="blog-section">
-            <h2>Latest News</h2>
-            <a href="{% url 'create_post' %}" class="btn-create-post">Create Article</a>
+            <div class="home-heading">
+                <h2>Latest News</h2>
+                <a href="{% url 'create_post' %}" class="btn-create-post">Create Article</a>
+            </div>
             {% for post in posts %}
                 <article class="post clickable" data-post-id="{{ post.id }}">
                     <div class="post-header">
@@ -55,18 +76,6 @@
                                 <span class="like-count">{{ post.likes_count }}</span>
                             </button>
                         </form>
-                        <button class="toggle-comment" data-post-id="{{ post.id }}"><i class="fa fa-comment"></i> {{ post.comments_count }}</button>
-                        <div id="commentModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close-comment">×</span>
-                                <form method="post" action="" data-action="{% url 'post_detail' post.pk %}">
-                                    {% csrf_token %}
-                                    {{ form.as_p }}
-                                    <textarea name="content" placeholder="Add a comment..."></textarea>
-                                    <button type="submit">Submit Comment</button>
-                                </form>
-                            </div>
-                        </div>
                         <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
                     </div>
                 </article>
@@ -80,8 +89,29 @@
         <p>© 2024 BDBA. All rights reserved.</p>
     </footer>
     <script src="{% static 'js/like_post.js' %}"></script>
-
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+        // Collapse Sidebar
+        document.getElementById('collapse-sidebar').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.remove('active');
+        });
+    </script>
     <script src="{% static 'js/extra.js' %}"></script>
 
 </body>
 </html>
+
+{% comment %} <button class="toggle-comment" data-post-id="{{ post.id }}"><i class="fa fa-comment"></i> {{ post.comments_count }}</button>
+                        <div id="commentModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close-comment">×</span>
+                                <form method="post" action="" data-action="{% url 'post_detail' post.pk %}">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <textarea name="content" placeholder="Add a comment..."></textarea>
+                                    <button type="submit">Submit Comment</button>
+                                </form>
+                            </div>
+                        </div> {% endcomment %}

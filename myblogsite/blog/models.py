@@ -7,6 +7,7 @@ from django.conf import settings
 
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.contrib.auth.models import AbstractUser
 from taggit.managers import TaggableManager
 from django.core.exceptions import ValidationError
@@ -20,6 +21,10 @@ class ProfileUser(AbstractUser):
 
     def __str__(self):
         return self.username if self.name is None else self.name
+    
+    @cached_property
+    def post_count(self):
+        return Post.objects.filter(author=self).count()
 
 class PostImage(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='images')

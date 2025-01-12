@@ -18,6 +18,9 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     return render(request, 'blog/home.html')
 
+def placeholder_view(request):
+    return render(request, 'placeholder.html')
+
 # def post_list(request):
 #     posts = Post.objects.all()
 #     return render(request, 'blog/post_list.html', {'posts': posts})
@@ -50,16 +53,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 
 
-def send_registration_email(user_name, user_email):
-    subject = 'Welcome to MyWeb'
-    html_content = render_to_string('welcome_email.html', {'user_name': user_name})
-    text_content = strip_tags(html_content)  # Plain text version for email clients without HTML support
-
-    email = EmailMultiAlternatives(
-        subject, text_content, settings.EMAIL_HOST_USER, [user_email]
-    )
-    email.attach_alternative(html_content, "text/html")
-    email.send(fail_silently=False, verify=False)
 
 def signup_view(request):
     if request.method == 'POST':
@@ -68,7 +61,6 @@ def signup_view(request):
             user = form.save()
             # Log the user in
             login(request, user)
-            send_registration_email(user.name, user.email)  
             messages.success(request, 'Your account has been created successfully!')
             return redirect('home')  # Redirect to a success page or home page
     else:
@@ -107,11 +99,12 @@ def profile(request, username=None):
     
     # This should fetch posts for the correct user
     posts = Post.objects.filter(author=user).order_by('-date_posted', '-time_posted')
-    
+    post_count = user.post_count
     return render(request, 'profile.html', {
         'user_profile': user,
         'posts': posts,
-        'username': username
+        'username': username,
+        'post_count': post_count
     })
 
 @login_required

@@ -12,21 +12,34 @@
 </head>
 <body>
     <header class="site-header">
-        <div class="container">
+        <nav class="sidebar-menu">
+            <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
+            <div id="sidebar" class="sidebar">
+                <button id="collapse-sidebar" class="collapse-button"><i class="fas fa-times"></i></button>
+                <ul>
+                    <li><a href="{% url 'home' %}">HOME</a></li>
+                    <li><a href="{% url 'search' %}">Search</a></li>
+                    <li><a href="{% url 'tags' %}">Tags</a></li>
+                    <li><a href="{% url 'profile_self' %}">Profile</a></li>
+                    <li><a href="{% url 'create_post' %}">Post</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="logo-container">
             <h1><a href="{% url 'home' %}">FolksNews</a></h1>
-            <nav class="site-nav">
-                {% if user.is_authenticated %}
-                <form method="post" action="{% url 'logout' %}" class="logout-form">
+        </div>
+        <div class="profile-container">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile_self' %}" class="profile-link" title="Profile">
+                    <i class="fa-solid fa-user-circle"></i>
+                </a>
+                <form action="{% url 'logout' %}" method="POST" class="logout-form">
                     {% csrf_token %}
                     <button type="submit" class="logout-button">Logout</button>
                 </form>
-                {% else %}
-                    {% if request.resolver_match.url_name not in 'login,signup' %}
-                        <a href="{% url 'login' %}">Login</a>
-                        <a href="{% url 'signup' %}">Sign Up</a>
-                    {% endif %}
-                {% endif %}
-            </nav>
+            {% else %}
+                <a href="{% url 'login' %}" class="login-link">Login</a>
+            {% endif %}
         </div>
     </header>
 
@@ -45,5 +58,10 @@
 
     {% block extra_js %}
     {% endblock %}
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+    </script>
 </body>
 </html>

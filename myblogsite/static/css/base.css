@@ -16,9 +16,12 @@
     overflow-x: hidden;
   }
   
-  /* Header Styles */
-  header {
-    padding: 1rem;
+  /* Header */
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
     background: linear-gradient(to right, var(--bg-color), rgba(0, 0, 0, 0.2));
     backdrop-filter: blur(5px);
     position: sticky;
@@ -26,25 +29,120 @@
     z-index: 1000;
   }
   
-  header h1 {
-    color: var(--primary-color);
-    font-size: 2rem;
-    margin: 0;
-    text-shadow: 0 0 10px var(--primary-color);
+  /* Sidebar Menu */
+  .sidebar-menu {
+    position: relative;
   }
   
-  header nav a {
+  .menu-toggle {
+    background: none;
+    border: none;
     color: var(--text-color);
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 1.1rem;
+    font-size: 1.5em;
+    cursor: pointer;
     transition: color 0.3s ease;
   }
   
-  header nav a:hover {
+  .menu-toggle:hover {
+    color: var(--primary-color);
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: -250px; /* Hide sidebar off-screen by default */
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background: rgba(26, 26, 26, 0.9);
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+  }
+  
+  .sidebar.active {
+    left: 0; /* Show sidebar when active */
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 15px;
+    border-bottom: 1px solid var(--primary-color);
+  }
+  
+  .sidebar ul li a {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    transition: color 0.3s ease;
+  }
+  
+  .sidebar ul li a:hover {
     color: var(--secondary-color);
   }
   
+  /* Logo */
+  .logo-container {
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  .logo-container h1 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 2em;
+    text-shadow: 0 0 10px var(--primary-color);
+  }
+  
+  /* Profile and Logout */
+  .profile-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-link {
+    color: var(--text-color);
+    font-size: 1.5em;
+    margin-right: 20px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .profile-link:hover {
+    color: var(--secondary-color);
+  }
+  
+  .logout-form {
+    margin: 0;
+  }
+  
+  .logout-button {
+    background: var(--primary-color);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: var(--bg-color);
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    background: var(--secondary-color);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .site-header {
+      padding: 10px;
+    }
+  
+    .logo-container h1 {
+      font-size: 1.5em;
+    }
+  }
   /* General Post Styles */
   .post, .post-detail {
     background: rgba(25, 25, 25, 0.7);
@@ -93,7 +191,6 @@
     border-radius: 5px;
     box-shadow: 0 0 20px rgba(0, 183, 255, 0.5);
     transition: opacity 0.3s ease;
-    opacity: 0;
   }
   
   .post-images img.loaded, .post-detail img.loaded {
@@ -107,14 +204,11 @@
     color: #666;
     cursor: pointer;
     transition: color 0.3s ease;
+
+    font-size: 1.15em; /* Increase font size */
+    padding:0.7em /* Add padding for larger clickable area */
   }
-  .toggle-comment{
-    background: none;
-    border: none;
-    color: #666;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
+  
   
   .like-button:hover, .like-button.liked {
     color: var(--secondary-color);
@@ -262,3 +356,26 @@
   form[action="{% url 'post_detail' post.pk %}"] button:hover {
     background: var(--secondary-color);
   }
+
+  a:visited {
+    color: inherit; /* This will make the visited link the same color as the unvisited one */
+    text-decoration: none; /* Removes underline if you don't want it */
+}
+
+.profile-header{
+  padding: 1em;
+}
+
+#posts-heading{
+  padding: 1em;
+}
+
+.post-action-group {
+  display: flex; /* or display: inline-flex; if you want them to stay on one line even if there's not enough space */
+  align-items: center; /* Vertically center the items if needed */
+  gap: 10px; /* Space between the form and the link */
+}
+
+.signup-container{
+  padding: 1em;
+}
