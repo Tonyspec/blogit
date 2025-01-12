@@ -17,10 +17,12 @@ urlpatterns = [
     path('tag/<slug:tag_slug>/', views.tag_detail, name='tag_detail'),
     path('comment/<int:comment_id>/like/', views.like_comment, name='like_comment'),
     path('search/', views.placeholder_view, name='search'),
-    path('tags/', views.placeholder_view, name='tags'),
+    path('tags/', views.all_tags, name='tags'),
     path('profile/<str:username>/follow/', views.follow, name='follow'),
     path('profile/<str:username>/unfollow/', views.unfollow, name='unfollow'),
     path('like_comment/<int:comment_id>/', views.like_comment, name='like_comment'),
     path('fetch_comments/<int:post_id>/', views.fetch_comments, name='fetch_comments'),
-    path('submit_comment/<int:post_id>/', views.submit_comment, name='submit_comment')
+    path('submit_comment/<int:post_id>/', views.submit_comment, name='submit_comment'),
+    path('profile/<str:username>/following/', views.following, name='following'),
+    path('profile/<str:username>/followers/', views.followers, name='followers')
 ]

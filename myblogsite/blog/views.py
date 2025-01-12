@@ -207,6 +207,16 @@ def unfollow(request, username):
     Follow.objects.filter(follower=request.user, followed=user_to_unfollow).delete()
     return redirect('profile', username=username)
 
+def following(request, username):
+    user = get_object_or_404(ProfileUser, username=username)
+    following = user.following.all()
+    return render(request, 'following.html', {'user': user, 'following': following})
+
+def followers(request, username):
+    user = get_object_or_404(ProfileUser, username=username)
+    followers = user.followers.all()
+    return render(request, 'followers.html', {'user': user, 'followers': followers})
+
 
 @login_required
 def like_comment(request, comment_id):
@@ -248,3 +258,15 @@ def submit_comment(request, post_id):
         )
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'message': 'Comment text is required.'})
+
+from django.db.models import Count
+def all_tags(request):
+    # Here you would calculate or fetch the tag sizes based on your logic
+    # For example, based on how many posts each tag is associated with
+    tags = Tag.objects.annotate(size=Count('post')).order_by('-size')
+    
+    # Convert the count to a size for the tag cloud (this is just an example)
+    for tag in tags:
+        tag.size = 1 + (tag.size / max(tag.size for tag in tags)) * 2  # Scale size between 1em and 3em
+    
+    return render(request, 'tags.html', {'tags': tags})

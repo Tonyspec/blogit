@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="tags-page">
+        <h1>Tags</h1>
+        <div class="tag-cloud">
+            {% for tag in tags %}
+                <a href="{% url 'tag_detail' tag.slug %}" class="tag-item" style="font-size: {{ tag.size }}em;">#{{ tag.name }}</a>
+            {% empty %}
+                <p>No tags found.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -33,7 +33,10 @@
                 </form>
             {% endif %}
         {% endif %}
-        <p>Followers: {{ followers_count }} | Following: {{ following_count }}</p>
+        <div class="profile-stats">
+            <a href="{% url 'following' user_profile.username %}">Following: {{ user_profile.following_count }}</a>
+            <a href="{% url 'followers' user_profile.username %}">Followers: {{ user_profile.followers_count }}</a>
+        </div>
         {%if post_count > 0%}
             <p>Number of Posts: {{ post_count }}</p>
         {%else%}
