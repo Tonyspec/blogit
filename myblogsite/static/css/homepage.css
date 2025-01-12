@@ -218,9 +218,10 @@
   .like-button {
     background: none;
     border: none;
-    color: #666;
+    color: white;
     cursor: pointer;
     transition: color 0.3s ease;
+    font-size:1em;
   }
   
   .like-button:hover, .like-button.liked {
@@ -443,4 +444,21 @@
 
 .home-heading{
   padding: 1em;
+}
+
+.comment-count {
+  color: var(--text-color);
+  font-size: 1.15em;
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.comment-count i {
+  transition: color 0.3s ease;
+}
+
+.comment-count:hover i {
+  color: var(--secondary-color);
 }
