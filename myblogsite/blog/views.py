@@ -25,7 +25,7 @@ def placeholder_view(request):
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     comments = post.comments.all()
-    
+
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -36,7 +36,7 @@ def post_detail(request, pk):
             return redirect('post_detail', pk=post.pk)
     else:
         form = CommentForm()
-    
+
     return render(request, 'blog/post_detail.html', {
         'post': post,
         'comments': comments,
@@ -80,7 +80,7 @@ def profile(request, username=None):
         user = request.user
     else:
         user = get_object_or_404(ProfileUser, username=username)
-    
+
     # This should fetch posts for the correct user
     posts = Post.objects.filter(author=user).order_by('-date_posted', '-time_posted')
     is_following = Follow.objects.filter(follower=request.user, followed=user).exists() if request.user.is_authenticated else False
@@ -121,12 +121,12 @@ def create_post(request):
             post = form.save(commit=False)  # Save with commit=False to set author
             post.author = request.user  # Set the author
             post.save()  # Now save the post with the author set
-            
+
             # Handle tags after saving the instance
             form.save_m2m()
 
             # Handle images if they were uploaded
-            images = form.cleaned_data.get('images', [])
+            images = request.FILES.getlist('images')  # If 'images' is a field for multiple uploads
             for image in images:
                 PostImage.objects.create(post=post, image=image)
 
@@ -148,12 +148,12 @@ def home(request):
     posts = Post.objects.all().order_by('-date_posted', '-time_posted')[:10]  # Latest 10 posts
     return render(request, 'blog/home.html', {'posts': posts})
 
-#LIKE POST 
+#LIKE POST
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     user = request.user
-    
+
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         if Like.objects.filter(user=user, post=post).exists():
             Like.objects.filter(user=user, post=post).delete()
@@ -161,13 +161,13 @@ def like_post(request, post_id):
         else:
             Like.objects.create(user=user, post=post)
             liked = True
-        
+
         # Return JSON response
         return JsonResponse({
             'liked': liked,
             'likes_count': post.likes_count()
         })
-    
+
     # If not an AJAX request, redirect (though this should not occur with AJAX setup)
     return redirect('post_detail', pk=post_id)
 
@@ -175,7 +175,7 @@ def like_post(request, post_id):
 @login_required
 def post_list(request):
     posts = Post.objects.all()
-    
+
     if request.method == 'POST' and 'comment_content' in request.POST:
         post_id = request.POST.get('post_id')
         content = request.POST.get('comment_content')
@@ -243,7 +243,7 @@ def fetch_comments(request, post_id):
     data = [{'author': {'username': comment.author.username}, 'content': comment.content, 'created_date': comment.created_date} for comment in comments]
     return JsonResponse(data, safe=False)
 
-import json 
+import json
 @login_required
 @require_POST
 def submit_comment(request, post_id):
@@ -264,11 +264,11 @@ def all_tags(request):
     # Here you would calculate or fetch the tag sizes based on your logic
     # For example, based on how many posts each tag is associated with
     tags = Tag.objects.annotate(size=Count('post')).order_by('-size')
-    
+
     # Convert the count to a size for the tag cloud (this is just an example)
     for tag in tags:
         tag.size = 1 + (tag.size / max(tag.size for tag in tags)) * 2  # Scale size between 1em and 3em
-    
+
     return render(request, 'tags.html', {'tags': tags})
 
 from django.db.models import Q
@@ -282,17 +282,17 @@ def search(request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            
+
             # Search for posts
             post_results = Post.objects.filter(
-                Q(title__icontains=query) | 
+                Q(title__icontains=query) |
                 Q(content__icontains=query)
             )
 
             # Search for users
             user_results = ProfileUser.objects.filter(
-                Q(username__icontains=query) | 
-                Q(first_name__icontains=query) | 
+                Q(username__icontains=query) |
+                Q(first_name__icontains=query) |
                 Q(last_name__icontains=query)
             )
 

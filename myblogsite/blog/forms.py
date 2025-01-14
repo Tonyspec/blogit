@@ -19,7 +19,7 @@ class UserSignUpForm(UserCreationForm):
         if commit:
             user.save()
         return user
-    
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -59,11 +59,14 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'tags']
+        fields = ['title', 'content', 'tags', 'images']  # 'images' should be a FileField in your model
+        widgets = {
+            'images': forms.FileInput(attrs={'multiple': True}),  # If you're allowing multiple uploads
+        }
 
     def clean(self):
         cleaned_data = super().clean()
-        
+
         tags = cleaned_data.get('tags')
         if tags is None or not tags:
             self.add_error('tags', "At least one tag is required.")
@@ -81,11 +84,11 @@ class PostForm(forms.ModelForm):
                 instance.tags.set(*tags)
 
         return instance  # Don't handle images here; do it in the view
-    
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
-        
+
 class SearchForm(forms.Form):
     query = forms.CharField(max_length=100, label='')

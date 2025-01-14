@@ -59,4 +59,7 @@ class FollowSerializer(serializers.ModelSerializer):
         model = Follow
         fields = ['id', 'follower', 'followed', 'date_created']
 
-class CommentLikeSeria
+class CommentLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentLike
+        fields = ['id', 'comment', 'user', 'date_created']
