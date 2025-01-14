@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike
+from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike, Notification
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm, SearchForm
@@ -303,79 +303,124 @@ def search(request):
         'user_results': user_results,
     })
     
+
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    # Assuming you have a method in Post to like or unlike
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+        # Remove notification if it exists (you might want to implement this logic)
+    else:
+        post.likes.add(request.user)
+        new_notification = Notification.objects.create(
+            user=post.author,
+            notification_type='LP',
+            post=post,
+            actor=request.user,
+            text=f'{request.user.username} liked your post!'
+        )
+    
+    # Here you should decide where to redirect after liking/unliking
+    return redirect('post_detail', post_id=post.id)  # Assuming you have a post detail view
+
+@login_required
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+        Notification.objects.create(
+            user=comment.author,
+            notification_type='LC',
+            comment=comment,
+            actor=request.user,
+            text=f'{request.user.username} liked your comment!'
+        )
+    
+    # Redirect back to where the comment is shown, e.g., the post detail page
+    return redirect('post_detail', post_id=comment.post.id)
+
+from .forms import CommentForm  # Assuming this form exists
+
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            Notification.objects.create(
+                user=post.author,
+                notification_type='C',
+                post=post,
+                comment=comment,
+                actor=request.user,
+                text=f'{request.user.username} commented on your post!'
+            )
+            return redirect('post_detail', post_id=post.id)
+    else:
+        form = CommentForm()
+    return render(request, 'post/add_comment.html', {'form': form, 'post': post})
+
+@login_required
+def follow_user(request, user_id):
+    user_to_follow = get_object_or_404(User, id=user_id)
+    request.user.following.add(user_to_follow)
+    Notification.objects.create(
+        user=user_to_follow,
+        notification_type='F',
+        actor=request.user,
+        text=f'{request.user.username} started following you!'
+    )
+    return redirect('user_profile', user_id=user_id)  # Assuming there's a user profile page
+
+@login_required
+def notifications(request):
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    unread_count = notifications.filter(is_read=False).count()
+    return render(request, 'notifications.html', {
+        'notifications': notifications,
+        'unread_count': unread_count
+    })
+
+def mark_as_read(request, notification_id):
+    notification = Notification.objects.get(id=notification_id)
+    if notification.user == request.user:
+        notification.is_read = True
+        notification.save()
+    return redirect('notifications')  # Assuming you have a route named 'notifications'
+
 from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike
 from .serializers import PostSerializer, ProfileUserSerializer, LikeSerializer, CommentSerializer, FollowSerializer, CommentLikeSerializer
-from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    @action(detail=True, methods=['post'])
-    def like(self, request, pk=None):
-        post = self.get_object()
-        user = request.user
-        if Like.objects.filter(user=user, post=post).exists():
-            Like.objects.filter(user=user, post=post).delete()
-            liked = False
-        else:
-            Like.objects.create(user=user, post=post)
-            liked = True
-        return Response({
-            'liked': liked,
-            'likes_count': post.likes_count()
-        })
-
 class ProfileUserViewSet(viewsets.ModelViewSet):
     queryset = ProfileUser.objects.all()
     serializer_class = ProfileUserSerializer
-
-    @action(detail=True, methods=['post'])
-    def follow(self, request, pk=None):
-        user_to_follow = self.get_object()
-        Follow.objects.get_or_create(follower=request.user, followed=user_to_follow)
-        return Response({'status': 'User followed'})
-
-    @action(detail=True, methods=['post'])
-    def unfollow(self, request, pk=None):
-        user_to_unfollow = self.get_object()
-        Follow.objects.filter(follower=request.user, followed=user_to_unfollow).delete()
-        return Response({'status': 'User unfollowed'})
-
-class LikeViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Like.objects.all()
-    serializer_class = LikeSerializer
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    @action(detail=True, methods=['post'])
-    def like(self, request, pk=None):
-        comment = self.get_object()
-        user = request.user
-        if CommentLike.objects.filter(comment=comment, user=user).exists():
-            CommentLike.objects.filter(comment=comment, user=user).delete()
-            liked = False
-        else:
-            CommentLike.objects.create(comment=comment, user=user)
-            liked = True
-        return Response({
-            'liked': liked,
-            'likes_count': comment.likes_count
-        })
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
 
-class FollowViewSet(viewsets.ReadOnlyModelViewSet):
+class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
 
-class CommentLikeViewSet(viewsets.ReadOnlyModelViewSet):
+class CommentLikeViewSet(viewsets.ModelViewSet):
     queryset = CommentLike.objects.all()
     serializer_class = CommentLikeSerializer
-    
-def your_api_view(request):
-    return JsonResponse({"message": "API is working"})

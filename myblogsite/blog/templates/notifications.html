@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Notifications</h2>
+<p>Unread Notifications: {{ unread_count }}</p>
+<ul>
+{% for notification in notifications %}
+    <li>
+        {% if not notification.is_read %}
+        <strong>
+        {% endif %}
+        {{ notification.text }} 
+        {% if not notification.is_read %}
+        </strong>
+        {% endif %}
+        <a href="{% url 'mark_as_read' notification.id %}">Mark as Read</a>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}

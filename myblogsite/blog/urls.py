@@ -35,4 +35,6 @@ urlpatterns = [
     path('profile/<str:username>/following/', views.following, name='following'),
     path('profile/<str:username>/followers/', views.followers, name='followers'),
     path('api/', include(router.urls)),
+    path('notifications/', views.notifications, name='notifications'),
+    path('notifications/mark-as-read/<int:notification_id>/', views.mark_as_read, name='mark_as_read'),
 ]
