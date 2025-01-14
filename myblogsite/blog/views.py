@@ -302,3 +302,80 @@ def search(request):
         'post_results': post_results,
         'user_results': user_results,
     })
+    
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike
+from .serializers import PostSerializer, ProfileUserSerializer, LikeSerializer, CommentSerializer, FollowSerializer, CommentLikeSerializer
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+        if Like.objects.filter(user=user, post=post).exists():
+            Like.objects.filter(user=user, post=post).delete()
+            liked = False
+        else:
+            Like.objects.create(user=user, post=post)
+            liked = True
+        return Response({
+            'liked': liked,
+            'likes_count': post.likes_count()
+        })
+
+class ProfileUserViewSet(viewsets.ModelViewSet):
+    queryset = ProfileUser.objects.all()
+    serializer_class = ProfileUserSerializer
+
+    @action(detail=True, methods=['post'])
+    def follow(self, request, pk=None):
+        user_to_follow = self.get_object()
+        Follow.objects.get_or_create(follower=request.user, followed=user_to_follow)
+        return Response({'status': 'User followed'})
+
+    @action(detail=True, methods=['post'])
+    def unfollow(self, request, pk=None):
+        user_to_unfollow = self.get_object()
+        Follow.objects.filter(follower=request.user, followed=user_to_unfollow).delete()
+        return Response({'status': 'User unfollowed'})
+
+class LikeViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        comment = self.get_object()
+        user = request.user
+        if CommentLike.objects.filter(comment=comment, user=user).exists():
+            CommentLike.objects.filter(comment=comment, user=user).delete()
+            liked = False
+        else:
+            CommentLike.objects.create(comment=comment, user=user)
+            liked = True
+        return Response({
+            'liked': liked,
+            'likes_count': comment.likes_count
+        })
+
+class FollowViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+
+class CommentLikeViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = CommentLike.objects.all()
+    serializer_class = CommentLikeSerializer
+    
+def your_api_view(request):
+    return JsonResponse({"message": "API is working"})

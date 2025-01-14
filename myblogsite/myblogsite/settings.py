@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'blog',
     'taggit',
+    'taggit_serializer',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -152,3 +154,9 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'news_nest@icloud.com'
 EMAIL_HOST_PASSWORD = 'pzbj-ovxw-mtxs-jrmq'  # Note: Not your regular password but an app-specific password
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}

@@ -1,7 +1,16 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from . import views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'posts', views.PostViewSet)
+router.register(r'users', views.ProfileUserViewSet)
+router.register(r'comments', views.CommentViewSet)
+router.register(r'comments', views.LikeViewSet)
+router.register(r'comments', views.CommentLikeViewSet)
+router.register(r'comments', views.FollowViewSet)
 
 urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
@@ -24,5 +33,6 @@ urlpatterns = [
     path('fetch_comments/<int:post_id>/', views.fetch_comments, name='fetch_comments'),
     path('submit_comment/<int:post_id>/', views.submit_comment, name='submit_comment'),
     path('profile/<str:username>/following/', views.following, name='following'),
-    path('profile/<str:username>/followers/', views.followers, name='followers')
+    path('profile/<str:username>/followers/', views.followers, name='followers'),
+    path('api/', include(router.urls)),
 ]

@@ -26,6 +26,7 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('account/', include('django.contrib.auth.urls')), 
     path('blog/', include('blog.urls')),
+    path('api/', include('blog.urls')),  # if you have a separate urls.py for your api
 ] 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
