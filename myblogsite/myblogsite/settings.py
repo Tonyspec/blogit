@@ -31,7 +31,9 @@ SECRET_KEY = 'django-insecure-r%bbv1--m&gho83!1a_8^3iq!dffi$3bj97)1s#!2u(_*%#m1w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'txndxa.pythonanywhere.com',
+    ]
 
 
 # Application definition
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'blog',
     'taggit',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -85,12 +88,12 @@ WSGI_APPLICATION = 'myblogsite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',  # or just 'postgresql'
+        'ENGINE': 'django.db.backends.postgresql',  # or just 'postgresql'
         'NAME': 'bdba',
         'USER': 'txndxa',
         'PASSWORD': 'unbeatable',
-        'HOST': 'localhost',  # or the server ip if not on your local machine
-        'PORT': '',  # default is usually 5432, leave empty if default
+        'HOST': 'txndxa-4294.postgres.pythonanywhere-services.com',  # or the server ip if not on your local machine
+        'PORT': '14294',  # default is usually 5432, leave empty if default
     }
 }
 
@@ -133,7 +136,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "/home/txndxa/blogit/myblogsite/static",
 ]
 
 # Default primary key field type
