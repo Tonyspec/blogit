@@ -120,7 +120,7 @@ class Notification(models.Model):
         ('C', 'Comment on Post'),  # Comment on post
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     notification_type = models.CharField(max_length=2, choices=NOTIFICATION_TYPES)
     post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True, blank=True)
     comment = models.ForeignKey('Comment', on_delete=models.CASCADE, null=True, blank=True)
