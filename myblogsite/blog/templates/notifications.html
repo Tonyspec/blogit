@@ -1,35 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="notifications-page">
-    <h2 class="page-title">Notifications</h2>
-    <p class="unread-count">Unread Notifications: {{ unread_count }}</p>
-    <ul class="notification-list">
-    {% for notification in notifications %}
-        <li class="notification-item {% if not notification.is_read %}unread{% endif %}">
-            {% if notification.post %}
-                <a href="{% url 'post_detail' notification.post.id %}">{{ notification.post.title }}</a> 
-            {% endif %}
-            {% if notification.comment %}
-                <a href="{% url 'post_detail' notification.comment.post.id %}">Comment</a>
-            {% endif %}
-            was
-            {% if notification.notification_type == 'LP' %}
-                liked by
-            {% elif notification.notification_type == 'LC' %}
-                liked by
-            {% elif notification.notification_type == 'C' %}
-                commented on by
-            {% elif notification.notification_type == 'F' %}
-                followed by
-            {% endif %}
-            <a href="{% url 'profile' notification.actor.id %}">{{ notification.actor.username }}</a>.
-            <span class="mark-as-read">
-                <!-- Uncomment the following line if you want to add a 'Mark as Read' option -->
-                <!--<a href="{% url 'mark_as_read' notification.id %}">Mark as Read</a>-->
-            </span>
-        </li>
-    {% endfor %}
-    </ul>
-</div>
+<h2>Notifications</h2>
+<p>Unread Notifications: {{ unread_count }}</p>
+<ul>
+{% for notification in notifications %}
+    <li>
+        {% if not notification.is_read %}
+        <strong>
+        {% endif %}
+        {% if notification.post %}
+            <a href="{% url 'post_detail' notification.post.id %}">{{ notification.post.title }}</a>  <!-- Assuming Post has a title -->
+        {% endif %}
+        {% if notification.comment %}
+            <a href="{% url 'post_detail' notification.comment.post.id %}">Comment</a>
+        {% endif %}
+        was
+        {% if notification.notification_type == 'LP' %}
+            liked by
+        {% elif notification.notification_type == 'LC' %}
+            liked by
+        {% elif notification.notification_type == 'C' %}
+            commented on by
+        {% elif notification.notification_type == 'F' %}
+            followed by
+        {% endif %}
+        <a href="{% url 'profile' notification.actor.username %}">{{ notification.actor.username }}</a>.
+        {% if not notification.is_read %}
+        </strong>
+        {% endif %}
+        <!--<a href="{% url 'mark_as_read' notification.id %}">Mark as Read</a>-->
+    </li>
+{% endfor %}
+</ul>
 {% endblock %}
