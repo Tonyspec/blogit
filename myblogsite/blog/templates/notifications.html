@@ -25,7 +25,7 @@
         {% elif notification.notification_type == 'F' %}
             followed by
         {% endif %}
-        <a href="{% url 'user_profile' notification.actor.id %}">{{ notification.actor.username }}</a>.
+        <a href="{% url 'profile' notification.actor.id %}">{{ notification.actor.username }}</a>.
         {% if not notification.is_read %}
         </strong>
         {% endif %}
