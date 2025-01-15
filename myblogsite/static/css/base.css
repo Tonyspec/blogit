@@ -690,3 +690,80 @@ a:visited {
       max-width: 100px; /* Smaller logo for mobile */
   }
 }
+
+/* Notifications Styles */
+.notifications-page {
+  padding: 20px;
+}
+
+.page-title {
+  color: var(--primary-color);
+  font-size: 1.5em;
+  text-align: center;
+  margin-bottom: 20px;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.unread-count {
+  color: var(--secondary-color);
+  font-size: 1.2em;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.notification-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.notification-item {
+  background: rgba(25, 25, 25, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 15px;
+  box-shadow: 0 8px 15px var(--shadow-color);
+  transition: all 0.3s ease;
+}
+
+.notification-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 25px var(--shadow-color);
+}
+
+.notification-item.unread {
+  border-left: 4px solid var(--secondary-color);
+}
+
+.notification-item a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.notification-item a:hover {
+  color: var(--secondary-color);
+}
+
+.mark-as-read a {
+  color: var(--primary-color);
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .notifications-page {
+      padding: 10px;
+  }
+  
+  .page-title {
+      font-size: 1.2em;
+  }
+  
+  .unread-count {
+      font-size: 1em;
+  }
+}
