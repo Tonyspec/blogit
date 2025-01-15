@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import ProfileUser, Post, PostImage, Comment
+from .models import ProfileUser, Post, PostImage, Comment, Paragraph
 
 class UserSignUpForm(UserCreationForm):
     name = forms.CharField(max_length=150, required=False)
@@ -54,12 +54,13 @@ class MultipleFileField(forms.FileField):
         return result
 
 class PostForm(forms.ModelForm):
+    summary = forms.CharField(widget=forms.Textarea, required=False)
     images = MultipleFileField(required=False)
     tags = TagField(required=True)
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'tags', 'images']  # 'images' should be a FileField in your model
+        fields = ['title', 'summary', 'content', 'tags', 'images']  # 'images' should be a FileField in your model
         widgets = {
             'images': forms.FileInput(attrs={'multiple': True}),  # If you're allowing multiple uploads
         }
@@ -84,6 +85,22 @@ class PostForm(forms.ModelForm):
                 instance.tags.set(*tags)
 
         return instance  # Don't handle images here; do it in the view
+
+class ParagraphForm(forms.ModelForm):
+    class Meta:
+        model = Paragraph
+        fields = ['content']
+
+from django.forms import inlineformset_factory
+
+ParagraphFormSet = inlineformset_factory(
+    Post,
+    Paragraph,
+    form=ParagraphForm,
+    extra=1,  # Starts with one extra form
+    can_delete=True,
+    can_order=True
+)
 
 class CommentForm(forms.ModelForm):
     class Meta:

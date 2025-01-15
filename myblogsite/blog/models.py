@@ -41,6 +41,7 @@ class PostImage(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
+    summary = models.TextField(blank=True)
     content = models.TextField()  # Now can hold larger articles
     date_posted = models.DateField(default=timezone.now)
     time_posted = models.TimeField(default=timezone.now)
@@ -59,6 +60,15 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return f"/post/{self.pk}/"
+
+class Paragraph(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='paragraphs')
+    content = models.TextField()
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
 
 
 # In your models.py

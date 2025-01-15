@@ -17,10 +17,6 @@
                 {{ form.title }}
             </div>
             <div class="form-group">
-                <label for="{{ form.content.id_for_label }}">Content:</label>
-                {{ form.content }}
-            </div>
-            <div class="form-group">
                 <label for="{{ form.tags.id_for_label }}">Tags (comma separated):</label>
                 {{ form.tags }}
             </div>
@@ -29,12 +25,77 @@
                 <input type="file" name="images" id="id_images" multiple accept="image/*">
                 <div id="preview-images"></div>
             </div>
+            <div class="form-group">
+                <label for="{{ form.summary.id_for_label }}">Summary:</label>
+                {{ form.summary }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.content.id_for_label }}">Content:</label>
+                {{ form.content }}
+            </div>
+            <div id="paragraph-forms">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                    <div class="paragraph-form">
+                        {{ form.id }}
+                        {{ form.content }}
+                        <button type="button" class="remove-form">Remove</button>
+                    </div>
+                {% endfor %}
+                <button type="button" id="add-form">Add Paragraph</button>
+            </div>
             <button type="submit" class="btn-submit">Submit</button>
         </form>
     </div>
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var formIdx = {{ formset.total_form_count|add:"-1" }};
+
+        $('#add-form').click(function() {
+            var form_copy = $('#paragraph-forms .paragraph-form:first').clone();
+
+            // Only try to replace if 'name' or 'id' exists
+            form_copy.find(':input').each(function() {
+                var name = $(this).attr('name');
+                var id = $(this).attr('id');
+                if (name !== undefined) {
+                    name = name.replace(/-\d+-/, '-' + formIdx + '-');
+                    $(this).attr('name', name);
+                }
+                if (id !== undefined) {
+                    id = id.replace(/-\d+-/, '-' + formIdx + '-');
+                    $(this).attr('id', id);
+                }
+                $(this).val('');  // Clear the value
+            });
+
+            // Update labels similarly
+            form_copy.find('label').each(function() {
+                var forAttr = $(this).attr('for');
+                if (forAttr !== undefined) {
+                    var newFor = forAttr.replace(/-\d+-/, '-' + formIdx + '-');
+                    $(this).attr('for', newFor);
+                }
+            });
+
+            // Append the new form
+            form_copy.insertBefore('#add-form');
+            formIdx++;
+            $('#id_paragraph_set-TOTAL_FORMS').val(formIdx);
+        });
+
+        // Remove form functionality
+        $('#paragraph-forms').on('click', '.remove-form', function() {
+            $(this).closest('.paragraph-form').remove();
+            formIdx--;
+            $('#id_paragraph_set-TOTAL_FORMS').val(formIdx);
+        });
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const input = document.getElementById('id_images');

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike, Notification
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm, SearchForm
+from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm, SearchForm, PostForm, ParagraphFormSet, ParagraphForm
 
 from django.contrib.auth import login
 
@@ -125,13 +125,20 @@ def edit_profile(request, username):
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
+        formset = ParagraphFormSet(request.POST, instance=Post())
+        if form.is_valid() and formset.is_valid():
             post = form.save(commit=False)  # Save with commit=False to set author
             post.author = request.user  # Set the author
             post.save()  # Now save the post with the author set
 
             # Handle tags after saving the instance
             form.save_m2m()
+            # Save paragraphs
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.post = post
+                instance.save()
+            formset.save_m2m()
 
             # Handle images if they were uploaded
             images = request.FILES.getlist('images')  # If 'images' is a field for multiple uploads
@@ -141,7 +148,8 @@ def create_post(request):
             return redirect('home')
     else:
         form = PostForm()
-    return render(request, 'create_post.html', {'form': form})
+        formset = ParagraphFormSet()
+    return render(request, 'create_post.html', {'form': form,  'formset': formset})
 
 from taggit.models import Tag
 
