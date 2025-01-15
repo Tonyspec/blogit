@@ -9,7 +9,23 @@
         {% if not notification.is_read %}
         <strong>
         {% endif %}
-        {{ notification.text }} 
+        {% if notification.post %}
+            <a href="{% url 'post_detail' notification.post.id %}">{{ notification.post.title }}</a>  <!-- Assuming Post has a title -->
+        {% endif %}
+        {% if notification.comment %}
+            <a href="{% url 'comment_detail' notification.comment.id %}">Comment</a>  <!-- Change to actual comment display -->
+        {% endif %}
+        was 
+        {% if notification.notification_type == 'LP' %}
+            liked by
+        {% elif notification.notification_type == 'LC' %}
+            comment liked by
+        {% elif notification.notification_type == 'C' %}
+            commented on by
+        {% elif notification.notification_type == 'F' %}
+            followed by
+        {% endif %}
+        <a href="{% url 'user_profile' notification.actor.id %}">{{ notification.actor.username }}</a>.
         {% if not notification.is_read %}
         </strong>
         {% endif %}
