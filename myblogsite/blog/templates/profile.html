@@ -17,9 +17,9 @@
         {% if user_profile.location %}
             <p>Location: {{ user_profile.location }}</p>
         {% endif %}
-        {% if user_profile.email %}
-            <p>Email: {{ user_profile.email }}</p>
-        {% endif %}
+        <!--{% if user_profile.email %}-->
+        <!--    <p>Email: {{ user_profile.email }}</p>-->
+        <!--{% endif %}-->
         {% if user_profile != request.user %}
             {% if is_following %}
                 <form action="{% url 'unfollow' username=user_profile.username %}" method="post">

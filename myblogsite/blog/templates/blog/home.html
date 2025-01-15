@@ -120,13 +120,3 @@
 </body>
 </html>
 
-{% comment %} <button class="toggle-comment" data-post-id="{{ post.id }}"><i class="fa fa-comment"></i> {{ post.comments_count }}</button>
-                        <div id="commentModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close-comment">×</span>
-                                <form method="post" action="" data-action="{% url 'post_detail' post.pk %}">
-                                    {% csrf_token %}
-                                    {{ form.as_p }}
-                                    <textarea name="content" placeholder="Add a comment..."></textarea>
-                                    <button type="submit">Submit Comment</button>
-                                </form>

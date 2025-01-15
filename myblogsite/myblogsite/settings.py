@@ -33,6 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'txndxa.pythonanywhere.com',
+    'www.voxpop.live',
     ]
 
 

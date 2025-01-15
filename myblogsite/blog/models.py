@@ -21,11 +21,11 @@ class ProfileUser(AbstractUser):
 
     def __str__(self):
         return self.username if self.name is None else self.name
-    
+
     @cached_property
     def post_count(self):
         return Post.objects.filter(author=self).count()
-    
+
     @property
     def followers_count(self):
         return self.followers.count()
@@ -50,7 +50,7 @@ class Post(models.Model):
 
     def likes_count(self):
         return Like.objects.filter(post=self).count()
-    
+
     def comments_count(self):
         return Comment.objects.filter(post=self).count()
 
@@ -59,8 +59,8 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return f"/post/{self.pk}/"
-    
-    
+
+
 # In your models.py
 
 from django.db import models
@@ -76,7 +76,7 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user.username} likes {self.post.title}"
-    
+
 
 
 class Comment(models.Model):
@@ -92,7 +92,7 @@ class Comment(models.Model):
     @property
     def likes_count(self):
         return self.commentlike_set.count()
-    
+
 class Follow(models.Model):
     follower = models.ForeignKey(get_user_model(), related_name='following', on_delete=models.CASCADE)
     followed = models.ForeignKey(get_user_model(), related_name='followers', on_delete=models.CASCADE)
@@ -103,7 +103,7 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'{self.follower} follows {self.followed}'
-    
+
 class CommentLike(models.Model):
     comment = models.ForeignKey('Comment', on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -111,7 +111,7 @@ class CommentLike(models.Model):
 
     class Meta:
         unique_together = ('comment', 'user')
-        
+
 class Notification(models.Model):
     NOTIFICATION_TYPES = (
         ('F', 'Follow'),  # For follow notifications
@@ -124,10 +124,11 @@ class Notification(models.Model):
     notification_type = models.CharField(max_length=2, choices=NOTIFICATION_TYPES)
     post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True, blank=True)
     comment = models.ForeignKey('Comment', on_delete=models.CASCADE, null=True, blank=True)
-    actor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='actions')
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='actions')
     text = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.text} - {self.timestamp}"
-    
+
