@@ -33,6 +33,14 @@ def post_detail(request, pk):
             comment.post = post
             comment.author = request.user
             comment.save()
+            Notification.objects.create(
+                user=post.author,
+                notification_type='C',
+                post=post,
+                comment=comment,
+                actor=request.user,
+                text=f'{request.user.username} commented on your post!'
+            )
             return redirect('post_detail', pk=post.pk)
     else:
         form = CommentForm()
@@ -161,6 +169,13 @@ def like_post(request, post_id):
         else:
             Like.objects.create(user=user, post=post)
             liked = True
+            new_notification = Notification.objects.create(
+            user=post.author,
+            notification_type='LP',
+            post=post,
+            actor=request.user,
+            text=f'{request.user.username} liked your post!'
+            )
 
         # Return JSON response
         return JsonResponse({
@@ -181,6 +196,14 @@ def post_list(request):
         content = request.POST.get('comment_content')
         post = get_object_or_404(Post, id=post_id)
         Comment.objects.create(post=post, author=request.user, content=content)
+        Notification.objects.create(
+                user=post.author,
+                notification_type='C',
+                post=post,
+                comment=comment,
+                actor=request.user,
+                text=f'{request.user.username} commented on your post!'
+            )
         # Redirect back to homepage or refresh data via AJAX
         return redirect('home')
 
@@ -199,6 +222,12 @@ def like_comment(request, comment_id):
 def follow(request, username):
     user_to_follow = get_object_or_404(ProfileUser, username=username)
     Follow.objects.get_or_create(follower=request.user, followed=user_to_follow)
+    Notification.objects.create(
+        user=user_to_follow,
+        notification_type='F',
+        actor=request.user,
+        text=f'{request.user.username} started following you!'
+    )
     return redirect('profile', username=username)
 
 @login_required
@@ -223,12 +252,17 @@ def like_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     user = request.user
 
-    if CommentLike.objects.filter(comment=comment, user=user).exists():
-        # User already likes this comment, so unlike it
-        CommentLike.objects.filter(comment=comment, user=user).delete()
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
     else:
-        # User does not like this comment, so like it
         CommentLike.objects.create(comment=comment, user=user)
+        Notification.objects.create(
+            user=comment.author,
+            notification_type='LC',
+            comment=comment,
+            actor=request.user,
+            text=f'{request.user.username} liked your comment!'
+        )
 
     # Redirect back to the referrer if available, otherwise to post detail
     return redirect(request.META.get('HTTP_REFERER') or reverse('post_detail', kwargs={'post_id': comment.post.id}))
@@ -255,6 +289,14 @@ def submit_comment(request, post_id):
             post=post,
             author=request.user,
             content=comment_text
+        )
+        Notification.objects.create(
+                user=post.author,
+                notification_type='C',
+                post=post,
+                comment=comment,
+                actor=request.user,
+                text=f'{request.user.username} commented on your post!'
         )
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'message': 'Comment text is required.'})
@@ -302,88 +344,88 @@ def search(request):
         'post_results': post_results,
         'user_results': user_results,
     })
-    
 
-@login_required
-def like_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    
-    # Assuming you have a method in Post to like or unlike
-    if request.user in post.likes.all():
-        post.likes.remove(request.user)
-        # Remove notification if it exists (you might want to implement this logic)
-    else:
-        post.likes.add(request.user)
-        new_notification = Notification.objects.create(
-            user=post.author,
-            notification_type='LP',
-            post=post,
-            actor=request.user,
-            text=f'{request.user.username} liked your post!'
-        )
-    
-    # Here you should decide where to redirect after liking/unliking
-    return redirect('post_detail', post_id=post.id)  # Assuming you have a post detail view
 
-@login_required
-def like_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
-    
-    if request.user in comment.likes.all():
-        comment.likes.remove(request.user)
-    else:
-        comment.likes.add(request.user)
-        Notification.objects.create(
-            user=comment.author,
-            notification_type='LC',
-            comment=comment,
-            actor=request.user,
-            text=f'{request.user.username} liked your comment!'
-        )
-    
-    # Redirect back to where the comment is shown, e.g., the post detail page
-    return redirect('post_detail', post_id=comment.post.id)
+# @login_required
+# def like_post(request, post_id):
+#     post = get_object_or_404(Post, id=post_id)
+
+#     # Assuming you have a method in Post to like or unlike
+#     if request.user in post.likes.all():
+#         post.likes.remove(request.user)
+#         # Remove notification if it exists (you might want to implement this logic)
+#     else:
+#         post.likes.add(request.user)
+#         new_notification = Notification.objects.create(
+#             user=post.author,
+#             notification_type='LP',
+#             post=post,
+#             actor=request.user,
+#             text=f'{request.user.username} liked your post!'
+#         )
+
+#     # Here you should decide where to redirect after liking/unliking
+#     return redirect('post_detail', post_id=post.id)  # Assuming you have a post detail view
+
+# @login_required
+# def like_comment(request, comment_id):
+#     comment = get_object_or_404(Comment, id=comment_id)
+
+#     if request.user in comment.likes.all():
+#         comment.likes.remove(request.user)
+#     else:
+#         comment.likes.add(request.user)
+#         Notification.objects.create(
+#             user=comment.author,
+#             notification_type='LC',
+#             comment=comment,
+#             actor=request.user,
+#             text=f'{request.user.username} liked your comment!'
+#         )
+
+#     # Redirect back to where the comment is shown, e.g., the post detail page
+#     return redirect('post_detail', post_id=comment.post.id)
 
 from .forms import CommentForm  # Assuming this form exists
 
-@login_required
-def add_comment(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-            Notification.objects.create(
-                user=post.author,
-                notification_type='C',
-                post=post,
-                comment=comment,
-                actor=request.user,
-                text=f'{request.user.username} commented on your post!'
-            )
-            return redirect('post_detail', post_id=post.id)
-    else:
-        form = CommentForm()
-    return render(request, 'post/add_comment.html', {'form': form, 'post': post})
+# @login_required
+# def add_comment(request, post_id):
+#     post = get_object_or_404(Post, id=post_id)
+#     if request.method == 'POST':
+#         form = CommentForm(request.POST)
+#         if form.is_valid():
+#             comment = form.save(commit=False)
+#             comment.post = post
+#             comment.author = request.user
+#             comment.save()
+#             Notification.objects.create(
+#                 user=post.author,
+#                 notification_type='C',
+#                 post=post,
+#                 comment=comment,
+#                 actor=request.user,
+#                 text=f'{request.user.username} commented on your post!'
+#             )
+#             return redirect('post_detail', post_id=post.id)
+#     else:
+#         form = CommentForm()
+#     return render(request, 'post/add_comment.html', {'form': form, 'post': post})
 
-@login_required
-def follow_user(request, user_id):
-    user_to_follow = get_object_or_404(User, id=user_id)
-    request.user.following.add(user_to_follow)
-    Notification.objects.create(
-        user=user_to_follow,
-        notification_type='F',
-        actor=request.user,
-        text=f'{request.user.username} started following you!'
-    )
-    return redirect('user_profile', user_id=user_id)  # Assuming there's a user profile page
+# @login_required
+# def follow_user(request, user_id):
+#     user_to_follow = get_object_or_404(User, id=user_id)
+#     request.user.following.add(user_to_follow)
+#     Notification.objects.create(
+#         user=user_to_follow,
+#         notification_type='F',
+#         actor=request.user,
+#         text=f'{request.user.username} started following you!'
+#     )
+#     return redirect('user_profile', user_id=user_id)  # Assuming there's a user profile page
 
 @login_required
 def notifications(request):
-    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')
     unread_count = notifications.filter(is_read=False).count()
     return render(request, 'notifications.html', {
         'notifications': notifications,
