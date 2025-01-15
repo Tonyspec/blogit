@@ -13,7 +13,7 @@
             <a href="{% url 'post_detail' notification.post.id %}">{{ notification.post.title }}</a>  <!-- Assuming Post has a title -->
         {% endif %}
         {% if notification.comment %}
-            <a href="{% url 'comment_detail' notification.comment.id %}">Comment</a>  <!-- Change to actual comment display -->
+            <a href="{% url 'comment_detail' notification.post.id %}">Comment</a>  <!-- Change to actual comment display -->
         {% endif %}
         was 
         {% if notification.notification_type == 'LP' %}
