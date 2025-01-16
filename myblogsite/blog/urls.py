@@ -37,4 +37,5 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('notifications/', views.notifications, name='notifications'),
     path('notifications/mark-as-read/<int:notification_id>/', views.mark_as_read, name='mark_as_read'),
+    path('post/<int:pk>/delete/', views.delete_post, name='delete_post'),
 ]

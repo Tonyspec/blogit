@@ -56,6 +56,12 @@
             </button>
         </form>
     </div>
+    {% if request.user == post.author %}
+        <form method="post" action="{% url 'delete_post' post.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="delete-button">Delete Post</button>
+        </form>
+    {% endif %}
     <div id="comments">
         <h3>Comments ({{ post.comments_count }})</h3>
         {% for comment in comments %}

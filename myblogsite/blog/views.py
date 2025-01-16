@@ -52,6 +52,24 @@ def post_detail(request, pk):
         'form': form,
     })
 
+@login_required
+def delete_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    # Check if the user is the author of the post
+    if request.user == post.author:
+        if request.method == 'POST':
+            # Delete the post
+            post.delete()
+            messages.success(request, 'Post has been deleted successfully.')
+            return redirect('home')  # Redirect to home or another relevant page
+        else:
+            # If it's not a POST request, show a confirmation page or handle accordingly
+            return render(request, 'confirm_delete.html', {'post': post})
+    else:
+        messages.error(request, 'You do not have permission to delete this post.')
+        return redirect('post_detail', pk=pk)
+
 def signup_view(request):
     if request.method == 'POST':
         form = UserSignUpForm(request.POST, request.FILES)
