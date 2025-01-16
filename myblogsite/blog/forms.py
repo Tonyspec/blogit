@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import ProfileUser, Post, PostImage, Comment, Paragraph
+from .models import ProfileUser, Post, PostImage, Comment, Article, Subheading
+from django.forms.models import inlineformset_factory
 
 class UserSignUpForm(UserCreationForm):
     name = forms.CharField(max_length=150, required=False)
@@ -60,7 +61,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'summary', 'content', 'tags', 'images']  # 'images' should be a FileField in your model
+        fields = ['title', 'summary', 'tags', 'images']  # 'images' should be a FileField in your model
         widgets = {
             'images': forms.FileInput(attrs={'multiple': True}),  # If you're allowing multiple uploads
         }
@@ -86,21 +87,19 @@ class PostForm(forms.ModelForm):
 
         return instance  # Don't handle images here; do it in the view
 
-class ParagraphForm(forms.ModelForm):
+class SubheadingForm(forms.ModelForm):
     class Meta:
-        model = Paragraph
+        model = Subheading
+        fields = ['title']
+
+SubheadingFormSet = inlineformset_factory(Post, Subheading, form=SubheadingForm, extra=1, can_delete=False, fields=('title',))
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
         fields = ['content']
 
-from django.forms import inlineformset_factory
-
-ParagraphFormSet = inlineformset_factory(
-    Post,
-    Paragraph,
-    form=ParagraphForm,
-    extra=1,  # Starts with one extra form
-    can_delete=True,
-    can_order=True
-)
+ArticleFormSet = inlineformset_factory(Post, Article, form=ArticleForm, extra=1, can_delete=False, fields=('content',))
 
 class CommentForm(forms.ModelForm):
     class Meta:

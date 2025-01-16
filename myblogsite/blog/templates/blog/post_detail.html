@@ -6,6 +6,17 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .post-content h3 {
+    margin-top: 20px;
+}
+.post-content p {
+    margin-bottom: 15px;
+}
+.summary {
+    margin: 10px 0;
+}
+</style>
 <div class="post-detail">
     <h2>{{ post.title }}</h2>
     <p>By: <a href="{% url 'profile' post.author.username %}">{{ post.author.username }}</a></p>
@@ -14,10 +25,23 @@
             <a href="{% url 'tag_detail' tag.slug %}" class="tag">#{{ tag.name }}</a>
         {% endfor %}
     </div>
-    <p>{{ post.content }}</p>
-    
+    <p class="summary">{{ post.summary }}</p>
+    <!-- Display subheadings and paragraphs -->
+    <div class="post-content">
+        {%if post.post_subheadings.all %}
+            {% for subheading in post.post_subheadings.all %}
+                <h3>{{ subheading.title }}</h3>
+                {% for article in subheading.articles.all %}
+                    <p>{{ article.content }}</p>
+                {% endfor %}
+            {% endfor %}
+        {% else %}
+            <p>No subheadings found</p>
+        {% endif %}
+    </div>
+
     {% for image in post.images.all %}
-                <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
+        <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
     {% endfor %}
 
     <div class="post-meta">
@@ -50,7 +74,6 @@
             <button type="submit">Submit Comment</button>
         </form>
     </div>
-
 
     <!-- Add a link back to the list of posts -->
     <a href="{% url 'home' %}" class="back-to-list">Back to Posts</a>

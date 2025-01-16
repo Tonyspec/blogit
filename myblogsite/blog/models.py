@@ -42,7 +42,8 @@ class PostImage(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
-    content = models.TextField()  # Now can hold larger articles
+    # content = models.TextField()  # Now can hold larger articles
+    published = models.BooleanField(default=False)
     date_posted = models.DateField(default=timezone.now)
     time_posted = models.TimeField(default=timezone.now)
     author = models.ForeignKey('blog.ProfileUser', on_delete=models.CASCADE)
@@ -60,11 +61,23 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return f"/post/{self.pk}/"
+    def publish(self):
+        self.published = True
+        self.save()
 
-class Paragraph(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='paragraphs')
+class Subheading(models.Model):
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='post_subheadings')
+    title = models.CharField(max_length=150)
+    order = models.PositiveIntegerField(default=0)  # To maintain order of subheadings
+
+    class Meta:
+        ordering = ['order']
+
+class Article(models.Model):
+    subheading = models.ForeignKey('Subheading', on_delete=models.CASCADE, related_name='articles', null=True, blank=True)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='post_articles')
     content = models.TextField()
-    order = models.PositiveIntegerField(default=0)
+    order = models.PositiveIntegerField(default=0)  # To maintain order of articles
 
     class Meta:
         ordering = ['order']

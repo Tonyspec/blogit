@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike, Notification
+from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike, Notification, Subheading, Article
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm, SearchForm, PostForm, ParagraphFormSet, ParagraphForm
-
+from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm, SearchForm, PostForm, ArticleForm, ArticleFormSet, SubheadingForm, SubheadingFormSet
+import logging
 from django.contrib.auth import login
+from django.db import transaction
 
 
 from django.shortcuts import render, redirect
@@ -121,35 +122,54 @@ def edit_profile(request, username):
     return render(request, 'edit_profile.html', {'form': form})
 
 #CREATE POST
+logger = logging.getLogger(__name__)
 @login_required
+@transaction.atomic
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
-        formset = ParagraphFormSet(request.POST, instance=Post())
-        if form.is_valid() and formset.is_valid():
-            post = form.save(commit=False)  # Save with commit=False to set author
-            post.author = request.user  # Set the author
-            post.save()  # Now save the post with the author set
 
-            # Handle tags after saving the instance
+        print("All POST data:", request.POST)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.published = True
+            post.save()
             form.save_m2m()
-            # Save paragraphs
-            instances = formset.save(commit=False)
-            for instance in instances:
-                instance.post = post
-                instance.save()
-            formset.save_m2m()
 
-            # Handle images if they were uploaded
-            images = request.FILES.getlist('images')  # If 'images' is a field for multiple uploads
+            # Handle images
+            images = request.FILES.getlist('images')
             for image in images:
                 PostImage.objects.create(post=post, image=image)
 
+            # Process dynamic content
+            subheadings = {}
+            for key, value in request.POST.items():
+                if key.startswith('sub-'):
+                    index = key.split('-')[1]
+                    subheadings[index] = {'title': value, 'paragraphs': []}
+                elif key.startswith('paragraph-'):
+                    parts = key.split('-')
+                    if len(parts) == 3:  # 'paragraph-[subIndex]-[paraIndex]'
+                        subIndex, paraIndex = parts[1], parts[2]
+                        if subIndex in subheadings:
+                            subheadings[subIndex]['paragraphs'].append(value)
+
+            print("Processed subheadings:", subheadings)
+
+            # Create Subheading with associated Paragraphs
+            for index, data in subheadings.items():
+                sub = Subheading.objects.create(post=post, title=data['title'])
+                for paragraph_content in data['paragraphs']:
+                    Article.objects.create(subheading=sub, post=post, content=paragraph_content)
+
             return redirect('home')
+        else:
+            print("Validation errors:", form.errors)
     else:
         form = PostForm()
-        formset = ParagraphFormSet()
-    return render(request, 'create_post.html', {'form': form,  'formset': formset})
+    return render(request, 'create_post.html', {'form': form})
 
 from taggit.models import Tag
 

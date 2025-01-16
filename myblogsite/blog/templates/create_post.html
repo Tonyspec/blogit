@@ -2,99 +2,232 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/create_post.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}">
+<!--<link rel="stylesheet" type="text/css" href="{% static 'css/create_post.css' %}">-->
+<!--<link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}">-->
 <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+<style>
+    .post-form{
+        background: #1a1a1a;
+    }
+    #id_images {
+        background-color: white;
+    }
+    #editor {
+      display: flex;
+      position: relative;
+      width: 100%;
+      margin: auto;
+    }
 
+    #editor-content {
+      flex-grow: 1;
+    }
+
+    #content {
+      margin-top: 20px;
+    }
+
+    .subheading, .paragraph {
+      margin: 10px 0;
+      position: relative;
+    }
+    .subheading input{
+        width: 98.5%;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+    .paragraph textarea {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    #editor-buttons {
+      position: fixed;
+      right: 0;
+      top: 200px; /* Adjust this to match your header height */
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      background: var(--bg-color);
+      padding: 20px 0;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #editor-buttons button {
+      background: var(--primary-color);
+      color: var(--bg-color);
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      margin: 5px 10px;
+      box-shadow: 0 2px 5px var(--shadow-color);
+      width: 100px; /* Fixed width to ensure they don't stretch */
+    }
+
+    #editor-buttons button:hover {
+      background: var(--secondary-color);
+    }
+</style>
 {% endblock %}
+
 {% block content %}
-    <div class="create-post-wrapper">
-        <h1>Create New Post</h1>
-        <form method="post" enctype="multipart/form-data" class="post-form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="{{ form.title.id_for_label }}">Title:</label>
-                {{ form.title }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.tags.id_for_label }}">Tags (comma separated):</label>
-                {{ form.tags }}
-            </div>
-            <div class="form-group image-upload">
-                <label for="id_images">Upload Images:</label>
-                <input type="file" name="images" id="id_images" multiple accept="image/*">
-                <div id="preview-images"></div>
-            </div>
-            <div class="form-group">
-                <label for="{{ form.summary.id_for_label }}">Summary:</label>
-                {{ form.summary }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.content.id_for_label }}">Content:</label>
-                {{ form.content }}
-            </div>
-            <div id="paragraph-forms">
-                {{ formset.management_form }}
-                {% for form in formset %}
-                    <div class="paragraph-form">
-                        {{ form.id }}
-                        {{ form.content }}
-                        <button type="button" class="remove-form">Remove</button>
-                    </div>
-                {% endfor %}
-                <button type="button" id="add-form">Add Paragraph</button>
-            </div>
-            <button type="submit" class="btn-submit">Submit</button>
-        </form>
-    </div>
+<div class="create-post-wrapper">
+    <h1>Create New Post</h1>
+    <form id="postForm" method="post" enctype="multipart/form-data" class="post-form">
+        {% csrf_token %}
+
+        <div class="form-field">
+            {{ form.title.label_tag }}
+            {{ form.title }}
+        </div>
+        <div class="form-field">
+            {{ form.summary.label_tag }}
+            {{ form.summary }}
+        </div>
+        <div class="form-field">
+            {{ form.tags.label_tag }}
+            {{ form.tags }}
+        </div>
+        <div class="form-field">
+            {{ form.images.label_tag }}
+            {{ form.images }}
+        </div>
+        <div id="editor">
+          <div id="editor-content">
+            <div id="content"></div>
+          </div>
+          <div id="editor-buttons">
+            <button type="button" id="addSubheading">Add Subheading</button>
+            <button type="button" id="addParagraph">Add Paragraph</button>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Submit</button>
+    </form>
+</div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        var formIdx = {{ formset.total_form_count|add:"-1" }};
+document.addEventListener('DOMContentLoaded', () => {
+  const contentArea = document.getElementById('content');
+  const addSubheadingBtn = document.getElementById('addSubheading');
+  const addParagraphBtn = document.getElementById('addParagraph');
 
-        $('#add-form').click(function() {
-            var form_copy = $('#paragraph-forms .paragraph-form:first').clone();
+  // Function to add a new subheading
+  addSubheadingBtn.addEventListener('click', () => {
+    const subheading = document.createElement('div');
+    subheading.classList.add('subheading', 'form-field');
+    const input = document.createElement('input');
+    input.placeholder = "Enter subheading";
+    subheading.appendChild(input);
 
-            // Only try to replace if 'name' or 'id' exists
-            form_copy.find(':input').each(function() {
-                var name = $(this).attr('name');
-                var id = $(this).attr('id');
-                if (name !== undefined) {
-                    name = name.replace(/-\d+-/, '-' + formIdx + '-');
-                    $(this).attr('name', name);
-                }
-                if (id !== undefined) {
-                    id = id.replace(/-\d+-/, '-' + formIdx + '-');
-                    $(this).attr('id', id);
-                }
-                $(this).val('');  // Clear the value
-            });
+    // Add remove button
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'X';
+    removeBtn.className = 'remove-btn';
+    removeBtn.onclick = () => subheading.remove();
+    subheading.appendChild(removeBtn);
 
-            // Update labels similarly
-            form_copy.find('label').each(function() {
-                var forAttr = $(this).attr('for');
-                if (forAttr !== undefined) {
-                    var newFor = forAttr.replace(/-\d+-/, '-' + formIdx + '-');
-                    $(this).attr('for', newFor);
-                }
-            });
+    contentArea.appendChild(subheading);
+  });
 
-            // Append the new form
-            form_copy.insertBefore('#add-form');
-            formIdx++;
-            $('#id_paragraph_set-TOTAL_FORMS').val(formIdx);
-        });
+  // Function to add a new paragraph
+  addParagraphBtn.addEventListener('click', () => {
+    const paragraph = document.createElement('div');
+    paragraph.classList.add('paragraph', 'form-field');
+    const textarea = document.createElement('textarea');
+    textarea.placeholder = "Enter paragraph text";
+    paragraph.appendChild(textarea);
 
-        // Remove form functionality
-        $('#paragraph-forms').on('click', '.remove-form', function() {
-            $(this).closest('.paragraph-form').remove();
-            formIdx--;
-            $('#id_paragraph_set-TOTAL_FORMS').val(formIdx);
-        });
+    // Add remove button
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'X';
+    removeBtn.className = 'remove-btn';
+    removeBtn.onclick = () => paragraph.remove();
+    paragraph.appendChild(removeBtn);
+
+    contentArea.appendChild(paragraph);
+  });
+});
+
+function collectDynamicContent() {
+    let subheadings = [];
+    let paragraphs = [];
+    let contentArea = document.getElementById('content');
+
+    // Collect elements in order of appearance
+    let currentSubheadingIndex = -1;
+    Array.from(contentArea.children).forEach(element => {
+        if (element.classList.contains('subheading')) {
+            let input = element.querySelector('input');
+            if (input && input.value) {
+                currentSubheadingIndex++;
+                subheadings.push(input.value);
+                paragraphs.push([]); // New array for this subheading's paragraphs
+            }
+        } else if (element.classList.contains('paragraph') && currentSubheadingIndex >= 0) {
+            let textarea = element.querySelector('textarea');
+            if (textarea && textarea.value) {
+                // Add to the current subheading's paragraph array
+                paragraphs[currentSubheadingIndex].push(textarea.value);
+            }
+        }
     });
+
+    console.log('Collected Subheadings:', subheadings); // Debug
+    console.log('Collected Paragraphs:', paragraphs);  // Debug
+    return { subheadings, paragraphs };
+}
+
+document.getElementById('postForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    let formData = new FormData(this);
+    let dynamicContent = collectDynamicContent();
+
+    dynamicContent.subheadings.forEach((heading, subIndex) => {
+    formData.append(`sub-${subIndex}`, heading);
+    if (dynamicContent.paragraphs[subIndex]) {
+        dynamicContent.paragraphs[subIndex].forEach((paragraph, paraIndex) => {
+            formData.append(`paragraph-${subIndex}-${paraIndex}`, paragraph);
+        });
+    }
+});
+    console.log(dynamicContent);
+    fetch('/api/new_post/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.url;  // Since you're using redirect, we'll get the URL from the response
+    })
+    .then(url => {
+        window.location.href = url;  // Redirect to the URL returned by the server
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error.message);
+        alert('An error occurred: ' + error.message);
+    });
+});
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

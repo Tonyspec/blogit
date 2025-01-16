@@ -24,9 +24,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
-    path('account/', include('django.contrib.auth.urls')), 
+    path('account/', include('django.contrib.auth.urls')),
     path('blog/', include('blog.urls')),
+    # path('new_post/', views.create_post, name='create_post'),
     path('api/', include('blog.urls')),  # if you have a separate urls.py for your api
-] 
+]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
