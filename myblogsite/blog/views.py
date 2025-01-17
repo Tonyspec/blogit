@@ -22,27 +22,30 @@ def home(request):
 def placeholder_view(request):
     return render(request, 'placeholder.html')
 
-@login_required(login_url='login')
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     comments = post.comments.all()
 
     if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-            Notification.objects.create(
-                user=post.author,
-                notification_type='C',
-                post=post,
-                comment=comment,
-                actor=request.user,
-                text=f'{request.user.username} commented on your post!'
-            )
-            return redirect('post_detail', pk=post.pk)
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.author = request.user
+                comment.save()
+                Notification.objects.create(
+                    user=post.author,
+                    notification_type='C',
+                    post=post,
+                    comment=comment,
+                    actor=request.user,
+                    text=f'{request.user.username} commented on your post!'
+                )
+                return redirect('post_detail', pk=post.pk)
+        else:
+            # Optionally redirect to login or show a message
+            return redirect('login')  # or return an error message like "Please log in to comment."
     else:
         form = CommentForm()
 
@@ -94,14 +97,14 @@ def custom_login(request):
                 login(request, user)
                 return redirect('home')  # Redirect to home or wherever after successful login
             else:
-                messages.error(request, "Invalid username or password.")
+                messages.error(request, "Invalid username or passworD.")
         else:
             messages.error(request, "Invalid form data.")
     else:
         form = LoginForm()
     return render(request, 'registration/login.html')
 
-@login_required(login_url='login')
+#@login_required(login_url='login')
 def profile(request, username=None):
     if username is None:
         user = request.user
@@ -241,6 +244,7 @@ def post_list(request):
         post_id = request.POST.get('post_id')
         content = request.POST.get('comment_content')
         post = get_object_or_404(Post, id=post_id)
+        comments = fetch_comments(request, post_id)
         Comment.objects.create(post=post, author=request.user, content=content)
         Notification.objects.create(
                 user=post.author,
@@ -248,21 +252,13 @@ def post_list(request):
                 post=post,
                 comment=comment,
                 actor=request.user,
-                text=f'{request.user.username} commented on your post!'
+                text=f'{request.user.username} testcommented on your post!'
             )
         # Redirect back to homepage or refresh data via AJAX
         return redirect('home')
 
     return render(request, 'home.html', {'posts': posts})
 
-#LIKE COMMENT
-# def like_comment(request, comment_id):
-#     comment = get_object_or_404(Comment, pk=comment_id)
-#     if request.user in comment.likes.all():
-#         comment.likes.remove(request.user)
-#     else:
-#         comment.likes.add(request.user)
-#     return redirect('post_detail', pk=comment.post.pk)
 
 @login_required
 def follow(request, username):
@@ -331,6 +327,7 @@ def submit_comment(request, post_id):
     data = json.loads(request.body)
     comment_text = data.get('comment_text', '').strip()
     if comment_text:
+        print("Comment submission received:", request.body)
         Comment.objects.create(
             post=post,
             author=request.user,
@@ -340,7 +337,6 @@ def submit_comment(request, post_id):
                 user=post.author,
                 notification_type='C',
                 post=post,
-                comment=comment,
                 actor=request.user,
                 text=f'{request.user.username} commented on your post!'
         )
