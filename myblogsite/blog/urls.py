@@ -1,7 +1,6 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
-from . import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -13,6 +12,10 @@ router.register(r'comments', views.CommentLikeViewSet)
 router.register(r'comments', views.FollowViewSet)
 
 urlpatterns = [
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('', views.post_list, name='post_list'),
     path('post/<int:pk>/', views.post_detail, name='post_detail'),
