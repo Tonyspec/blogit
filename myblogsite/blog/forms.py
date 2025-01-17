@@ -63,7 +63,7 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'summary', 'tags', 'images']  # 'images' should be a FileField in your model
         widgets = {
-            'images': forms.FileInput(attrs={'multiple': True}),  # If you're allowing multiple uploads
+            'images': MultipleFileInput,  # If you're allowing multiple uploads
         }
 
     def clean(self):
