@@ -84,7 +84,7 @@
                             </button>
                         </form>
                         <a href="#" class="comment-btn" data-post-id="{{ post.id }}"><i class="fa fa-comment"></i> {{ post.comments_count }}</a>
-                        <a href="{% url 'post_detail' post.pk %}" class="action"><i class="fa fa-share"></i> Details</a>
+                        <a href="{% url 'post_detail' post.slug %}" class="action"><i class="fa fa-share"></i> Details</a>
                     </div>
                 </article>
             {% empty %}

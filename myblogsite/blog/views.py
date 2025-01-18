@@ -23,8 +23,8 @@ def home(request):
 def placeholder_view(request):
     return render(request, 'placeholder.html')
 
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+def post_detail(request, slug):
+    post = get_object_or_404(Post, slug=slug)
     comments = post.comments.all()
 
     if request.method == 'POST':
@@ -43,7 +43,7 @@ def post_detail(request, pk):
                     actor=request.user,
                     text=f'{request.user.username} commented on your post!'
                 )
-                return redirect('post_detail', pk=post.pk)
+                return redirect('post_detail', slug=post.slug)
         else:
             # Optionally redirect to login or show a message
             return redirect('login')  # or return an error message like "Please log in to comment."
@@ -80,7 +80,7 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             # Send confirmation email
-            subject = 'Account create on VoxPop'
+            subject = 'Account created on VoxPop'
             message = f'Hello {user.username},\n\nYour account on VoxPop has been created!\n\nThank you for joining us!'
             send_mail(subject, message, 'testerbender0131@gmail.com', [user.email], fail_silently=False)
             # Log the user in
@@ -238,7 +238,7 @@ def like_post(request, post_id):
         })
 
     # If not an AJAX request, redirect (though this should not occur with AJAX setup)
-    return redirect('post_detail', pk=post_id)
+    return redirect('post_detail', kwargs={'slug':post.slug})
 
 
 @login_required
