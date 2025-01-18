@@ -1,2 +1,17 @@
-<p>Welcome, {{ user_name }}!</p>
-<p>Thank you for registering with us at MyWeb.</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; }
+        .welcome { font-size: 18px; }
+        .content { font-size: 16px; color: #666; line-height: 1.5; }
+        .signature { font-size: 16px; color: #666; }
+    </style>
+</head>
+<body>
+    <p class="welcome">Welcome, {{ user.username }}!</p>
+    <p class="content">Thank you for joining VoxPop! We're excited to have you here!</p>
+    <p class="signature">Best,</p>
+    <p class="signature">VoxPop team</p>
+</body>
+</html>

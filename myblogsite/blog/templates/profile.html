@@ -101,6 +101,9 @@
 {% if user == user_profile %}
     <a href="{% url 'edit_profile' user_profile.username %}" class="btn-edit-profile">Edit Profile</a>
 {% endif %}
+{% if request.user == user %}
+        <a href="{% url 'delete_account' %}" class="btn btn-danger">Delete Account</a>
+{% endif %}
 
 {% endblock %}
 

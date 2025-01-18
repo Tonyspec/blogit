@@ -134,6 +134,15 @@ a:visited {
     cursor: pointer;
     transition: background 0.3s ease;
   }
+  button{
+    background: var(--primary-color);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: var(--bg-color);
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
 
   .logout-button:hover {
     background: var(--secondary-color);

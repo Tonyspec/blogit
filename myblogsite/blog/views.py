@@ -6,6 +6,7 @@ from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm, Sear
 import logging
 from django.contrib.auth import login
 from django.db import transaction
+from django.core.mail import send_mail
 
 
 from django.shortcuts import render, redirect
@@ -78,6 +79,10 @@ def signup_view(request):
         form = UserSignUpForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
+            # Send confirmation email
+            subject = 'Account create on VoxPop'
+            message = f'Hello {user.username},\n\nYour account on VoxPop has been created!\n\nThank you for joining us!'
+            send_mail(subject, message, 'testerbender0131@gmail.com', [user.email], fail_silently=False)
             # Log the user in
             login(request, user)
             messages.success(request, 'Your account has been created successfully!')
@@ -402,6 +407,32 @@ def mark_as_read(request, notification_id):
         notification.is_read = True
         notification.save()
     return redirect('notifications')  # Assuming you have a route named 'notifications'
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        # This is a security measure to ensure the user really wants to delete the account
+        if 'confirm_delete' in request.POST:
+            user = request.user
+            email = user.email
+            username = user.username
+            
+            # Delete the user
+            user.delete()
+            
+            # Send confirmation email
+            subject = 'Account Deletion Confirmation'
+            message = f'Hello {username},\n\nYour account with the email {email} has been deleted from our system.'
+            send_mail(subject, message, 'testerbender0131@gmail.com', [email], fail_silently=False)
+            
+            # Log out the user (if the session still exists)
+            from django.contrib.auth import logout
+            logout(request)
+            
+            messages.success(request, 'Your account has been deleted. A confirmation email has been sent to your email address.')
+            return redirect('home')  # Redirect to home or any other appropriate page
+
+    return render(request, 'confirm_delete.html')
 
 from rest_framework import viewsets
 from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike
