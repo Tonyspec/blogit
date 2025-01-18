@@ -71,9 +71,9 @@
                     {% else %}
                     <div class="post-content">{{ post.content|truncatechars:200 }}</div>
                     {% endif %}
-                    <div class="post-images">
+                    <div class="image-grid {% if post.images.count == 1 %}one-image{% elif post.images.count == 2 %}two-images{% elif post.images.count == 3 %}three-images{% elif post.images.count == 4 %}four-images{% endif %}">
                         {% for image in post.images.all %}
-                            <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
+                            <img src="{{ image.image.url }}" alt="{{ image.image.name }}" class="post-image">
                         {% endfor %}
                     </div>
                     <div class="post-actions">

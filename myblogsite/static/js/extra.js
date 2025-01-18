@@ -87,3 +87,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 });
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.post-image');
+    images.forEach(image => {
+        image.addEventListener('click', function() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                image.requestFullscreen();
+            }
+        });
+    });
+});
