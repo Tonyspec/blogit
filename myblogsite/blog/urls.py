@@ -3,15 +3,31 @@ from . import views
 from django.contrib.auth import views as auth_views
 from rest_framework import routers
 
-router = routers.DefaultRouter()
-router.register(r'posts', views.PostViewSet)
-router.register(r'users', views.ProfileUserViewSet)
-router.register(r'comments', views.CommentViewSet)
-router.register(r'comments', views.LikeViewSet)
-router.register(r'comments', views.CommentLikeViewSet)
-router.register(r'comments', views.FollowViewSet)
+# router = routers.DefaultRouter()
+# router.register(r'posts', views.PostViewSet)
+# router.register(r'users', views.ProfileUserViewSet)
+# router.register(r'comments', views.CommentViewSet)
+# router.register(r'comments', views.LikeViewSet)
+# router.register(r'comments', views.CommentLikeViewSet)
+# router.register(r'comments', views.FollowViewSet)
+
+# from django.contrib.sitemaps.views import sitemap
+# from django.contrib.sitemaps import GenericSitemap
+# from .models import Post  # with your article model
+
+# post_dict = {
+#     'queryset': Post.objects.filter(published=True),  # Only include published posts
+#     'date_field': 'date_posted',  # Use the date field for sitemap
+# }
+
+# sitemaps = {
+#     'posts': GenericSitemap(post_dict, priority=0.6),
+# }
+
+
 
 urlpatterns = [
+    #path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
@@ -37,7 +53,7 @@ urlpatterns = [
     path('profile/<str:username>/following/', views.following, name='following'),
     path('profile/<str:username>/followers/', views.followers, name='followers'),
     path('new_post/', views.create_post, name='create_post'),
-    path('api/', include(router.urls)),
+    #path('api/', include(router.urls)),
     path('notifications/', views.notifications, name='notifications'),
     path('notifications/mark-as-read/<int:notification_id>/', views.mark_as_read, name='mark_as_read'),
     path('post/<int:pk>/delete/', views.delete_post, name='delete_post'),
