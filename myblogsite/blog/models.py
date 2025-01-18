@@ -4,13 +4,15 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-
+import uuid
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 from django.utils.functional import cached_property
 from django.contrib.auth.models import AbstractUser
 from taggit.managers import TaggableManager
 from django.core.exceptions import ValidationError
+from django.urls import path, reverse
 
 class ProfileUser(AbstractUser):
     # Inherits all fields from AbstractUser (username, password, email, etc.)
@@ -39,8 +41,10 @@ class PostImage(models.Model):
     image = models.ImageField(upload_to='post_images/')
 
 
+
 class Post(models.Model):
     title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=250, unique=True)
     summary = models.TextField(blank=True)
     # content = models.TextField()  # Now can hold larger articles
     published = models.BooleanField(default=False)
@@ -60,7 +64,11 @@ class Post(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return f"/post/{self.pk}/"
+        return reverse('post_detail', kwargs={'slug': self.slug})
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(Post, self).save(*args, **kwargs)
     def publish(self):
         self.published = True
         self.save()
