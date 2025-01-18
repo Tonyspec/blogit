@@ -16,6 +16,44 @@
 .summary {
     margin: 10px 0;
 }
+.post-detail {
+    /* Existing styles */
+}
+
+.post-image {
+    width: 100%; /* Default full width for single images */
+    max-width: 100%;
+    height: auto;
+    cursor: pointer; /* Changes cursor to indicate it's clickable */
+}
+
+.image-grid {
+    display: grid;
+    gap: 10px;
+    /* Force grid to be inline if necessary */
+    width: 100%;
+}
+
+.image-grid.two-images {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.image-grid.three-images {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.image-grid.four-images {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+
+/* Ensure images fit within their grid cell */
+.image-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This ensures the image covers the cell while maintaining aspect ratio */
+}
+
 </style>
 <div class="post-detail">
     <h2>{{ post.title }}</h2>
@@ -40,9 +78,11 @@
         {% endif %}
     </div>
 
-    {% for image in post.images.all %}
-        <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
-    {% endfor %}
+    <div class="image-grid {% if post.images.count == 2 %}two-images{% elif post.images.count == 3 %}three-images{% elif post.images.count == 4 %}four-images{% endif %}">
+        {% for image in post.images.all %}
+            <img src="{{ image.image.url }}" alt="{{ image.image.name }}" class="post-image">
+        {% endfor %}
+    </div>
 
     <div class="post-meta">
         <small>Posted on {{ post.date_posted }} at {{ post.time_posted }}</small>
@@ -84,5 +124,19 @@
     <!-- Add a link back to the list of posts -->
     <a href="{% url 'home' %}" class="back-to-list">Back to Posts</a>
     <script src="{% static 'js/like_post.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('.post-image');
+            images.forEach(image => {
+                image.addEventListener('click', function() {
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    } else {
+                        image.requestFullscreen();
+                    }
+                });
+            });
+        });
+    </script>
 </div>
 {% endblock %}

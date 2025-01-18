@@ -212,7 +212,7 @@ document.getElementById('postForm').addEventListener('submit', function(event) {
     }
 });
     console.log(dynamicContent);
-    fetch('/api/new_post/', {
+    fetch('/blog/new_post/', {
         method: 'POST',
         body: formData
     })
