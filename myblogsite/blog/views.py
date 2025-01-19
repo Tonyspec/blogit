@@ -250,8 +250,11 @@ def home(request):
     # Assuming the user has favorite tags stored under 'favourite_tags'
     if request.user.is_authenticated:
         user_favorite_tags = request.user.favourite_tags.all()
+        # Fetch the users that the current user follows
+        followed_users = [follow.followed for follow in request.user.following.all()]
     else:
         user_favorite_tags = []
+        followed_users = []
 
     # Today's date for checking recent posts
     today = timezone.now().date()
@@ -264,12 +267,14 @@ def home(request):
         like_count=Count('like'),
         comment_count=Count('comments'),
         has_fav_tag=Count('tags', filter=Q(tags__in=user_favorite_tags), distinct=True),
+        from_followed_user=Count('author', filter=Q(author__in=followed_users)),
     ).annotate(
         # Create an ordering field. Higher values mean higher priority
         priority=models.Case(
-            models.When(has_fav_tag__gt=0, then=3),  # Highest for posts with favorite tags
-            models.When(date_posted__gte=today - timedelta(days=1), then=2),  # High for recent posts
-            models.When(Q(like_count__gt=0) | Q(comment_count__gt=0), then=1),  # Medium for posts with engagement
+            models.When(has_fav_tag__gt=0, then=4),  # Highest for posts with favorite tags
+            models.When(from_followed_user__gt=0, then=3),  # High for posts from followed users
+            models.When(date_posted__gte=today - timedelta(days=1), then=2),  # Medium for recent posts
+            models.When(Q(like_count__gt=0) | Q(comment_count__gt=0), then=1),  # Lower for posts with engagement
             default=0,  # Lowest for others
             output_field=models.IntegerField()
         )
