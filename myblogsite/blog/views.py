@@ -460,4 +460,4 @@ class FollowViewSet(viewsets.ModelViewSet):
 
 class CommentLikeViewSet(viewsets.ModelViewSet):
     queryset = CommentLike.objects.all()
-    serializer_class = CommentLikeSerializer
+    serializer_cla
