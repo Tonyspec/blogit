@@ -19,7 +19,7 @@
         {% if query %}
             <h2>Results for "{{ query }}"</h2>
 
-            {% if post_results or user_results %}
+            {% if post_results or user_results or tag_results %}
                 {% if post_results %}
                     <h3>Posts</h3>
                     <ul>
@@ -37,6 +37,17 @@
                     {% for user in user_results %}
                         <li>
                             <a href="{% url 'profile' user.username %}">{{ user.username }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if tag_results %}
+                    <h3>Tags</h3>
+                    <ul>
+                    {% for tag in tag_results %}
+                        <li>
+                            <a href="{% url 'tag_detail' tag.slug %}">#{{ tag.name }}</a>
                         </li>
                     {% endfor %}
                     </ul>

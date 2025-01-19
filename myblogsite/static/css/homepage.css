@@ -6,7 +6,7 @@
     --secondary-color: #00FF7F; /* Bright green for highlights */
     --shadow-color: rgba(0, 183, 255, 0.2); /* Neon shadow for elements */
   }
-  
+
   body {
     font-family: 'Space Mono', monospace; /* Modern, techy font */
     background: var(--bg-color);
@@ -15,7 +15,7 @@
     padding: 0;
     overflow-x: hidden;
   }
-  
+
   /* Header */
 .site-header {
     display: flex;
@@ -28,12 +28,12 @@
     top: 0;
     z-index: 1000;
   }
-  
+
   /* Sidebar Menu */
   .sidebar-menu {
     position: relative;
   }
-  
+
   .menu-toggle {
     background: none;
     border: none;
@@ -42,11 +42,11 @@
     cursor: pointer;
     transition: color 0.3s ease;
   }
-  
+
   .menu-toggle:hover {
     color: var(--primary-color);
   }
-  
+
   .sidebar {
     position: fixed;
     left: -250px; /* Hide sidebar off-screen by default */
@@ -58,51 +58,51 @@
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0,0,0,0.5);
   }
-  
+
   .sidebar.active {
     left: 0; /* Show sidebar when active */
   }
-  
+
   .sidebar ul {
     list-style-type: none;
     padding: 0;
   }
-  
+
   .sidebar ul li {
     padding: 15px;
     border-bottom: 1px solid var(--primary-color);
   }
-  
+
   .sidebar ul li a {
     color: var(--text-color);
     text-decoration: none;
     display: block;
     transition: color 0.3s ease;
   }
-  
+
   .sidebar ul li a:hover {
     color: var(--secondary-color);
   }
-  
+
   /* Logo */
   .logo-container {
     flex-grow: 1;
     text-align: center;
   }
-  
+
   .logo-container h1 {
     margin: 0;
     color: var(--primary-color);
     font-size: 2em;
     text-shadow: 0 0 10px var(--primary-color);
   }
-  
+
   /* Profile and Logout */
   .profile-container {
     display: flex;
     align-items: center;
   }
-  
+
   .profile-link {
     color: var(--text-color);
     font-size: 1.5em;
@@ -110,15 +110,15 @@
     text-decoration: none;
     transition: color 0.3s ease;
   }
-  
+
   .profile-link:hover {
     color: var(--secondary-color);
   }
-  
+
   .logout-form {
     margin: 0;
   }
-  
+
   .logout-button {
     background: var(--primary-color);
     border: none;
@@ -128,17 +128,17 @@
     cursor: pointer;
     transition: background 0.3s ease;
   }
-  
+
   .logout-button:hover {
     background: var(--secondary-color);
   }
-  
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .site-header {
       padding: 10px;
     }
-  
+
     .logo-container h1 {
       font-size: 1.5em;
     }
@@ -159,7 +159,7 @@
     .collapse-button:hover {
         color: var(--secondary-color);
     }
-  
+
   /* General Post Styles */
   .post, .post-detail {
     background: rgba(25, 25, 25, 0.7);
@@ -170,12 +170,12 @@
     box-shadow: 0 8px 15px var(--shadow-color);
     transition: all 0.3s ease;
   }
-  
+
   .post:hover, .post-detail:hover {
     transform: translateY(-5px);
     box-shadow: 0 15px 25px var(--shadow-color);
   }
-  
+
   .post h3, .post-detail h2 {
     color: var(--primary-color);
     font-size: 1.5rem;
@@ -184,7 +184,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  
+
   /* Tags */
   .tags a {
     display: inline-block;
@@ -196,12 +196,12 @@
     margin: 0 5px 5px 0;
     transition: background 0.3s ease;
   }
-  
+
   .tags a:hover {
     background: var(--secondary-color);
     color: var(--bg-color);
   }
-  
+
   /* Images */
   /* .post-images img, .post-detail img {
     max-width: 100%;
@@ -209,11 +209,11 @@
     box-shadow: 0 0 20px rgba(0, 183, 255, 0.5);
     transition: opacity 0.3s ease;
   } */
-  
+
   .post-images img.loaded, .post-detail img.loaded {
     opacity: 1;
   }
-  
+
   /* Like Button */
   .like-button {
     background: none;
@@ -223,11 +223,11 @@
     transition: color 0.3s ease;
     font-size:1em;
   }
-  
+
   .like-button:hover, .like-button.liked {
     color: var(--secondary-color);
   }
-  
+
   /* Comments */
   #comments p {
     background: rgba(0, 0, 0, 0.5);
@@ -235,7 +235,7 @@
     border-radius: 5px;
     margin-bottom: 10px;
   }
-  
+
   /* Profile Styles */
   .profile-image {
     width: 150px;
@@ -245,11 +245,11 @@
     box-shadow: 0 0 20px var(--shadow-color);
     transition: transform 0.3s ease;
   }
-  
+
   .profile-image:hover {
     transform: scale(1.05);
   }
-  
+
   /* Footer */
   footer {
     background: rgba(25, 25, 25, 0.8);
@@ -258,17 +258,17 @@
     padding: 20px 0;
     margin-top: 20px;
   }
-  
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .post, .post-detail {
       padding: 1rem;
     }
-  
+
     header h1 {
       font-size: 1.5rem;
     }
-  
+
     header nav a {
       font-size: 0.9rem;
     }
@@ -278,7 +278,7 @@
 #comments {
     margin-top: 20px;
   }
-  
+
   #comments h3 {
     color: var(--primary-color);
     font-size: 1.2em;
@@ -286,7 +286,7 @@
     border-bottom: 1px solid var(--secondary-color);
     padding-bottom: 5px;
   }
-  
+
   #comments p {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
@@ -296,12 +296,12 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
   }
-  
+
   #comments p:hover {
     box-shadow: 0 6px 12px rgba(0, 183, 255, 0.2);
     transform: translateY(-2px);
   }
-  
+
   /* Comment Author */
   #comments p::before {
     content: attr(data-author);
@@ -314,13 +314,13 @@
     border-radius: 3px;
     font-size: 0.8em;
   }
-  
+
   /* Comment Content */
   #comments p span.comment-content {
     display: block;
     margin-top: 5px;
   }
-  
+
   /* Comment Metadata */
   #comments p span.comment-metadata {
     display: block;
@@ -328,7 +328,7 @@
     color: var(--text-color);
     opacity: 0.7;
   }
-  
+
   /* Comment Like */
   #comments p i.fa-thumbs-up {
     color: var(--secondary-color);
@@ -336,16 +336,16 @@
     cursor: pointer;
     transition: color 0.3s ease;
   }
-  
+
   #comments p i.fa-thumbs-up:hover {
     color: var(--primary-color);
   }
-  
+
   /* Comment Form */
   form[action="{% url 'post_detail' post.pk %}"] {
     margin-top: 20px;
   }
-  
+
   form[action="{% url 'post_detail' post.pk %}"] textarea {
     width: 100%;
     padding: 10px;
@@ -356,7 +356,7 @@
     resize: vertical;
     margin-bottom: 10px;
   }
-  
+
   form[action="{% url 'post_detail' post.pk %}"] button {
     background: var(--primary-color);
     border: none;
@@ -366,7 +366,7 @@
     cursor: pointer;
     transition: background 0.3s ease;
   }
-  
+
   form[action="{% url 'post_detail' post.pk %}"] button:hover {
     background: var(--secondary-color);
   }
@@ -376,11 +376,11 @@
     align-items: center; /* Vertically center the items if needed */
     gap: 10px; /* Space between the form and the link */
   }
-  
+
   .like-form {
     display: inline; /* Ensure the form itself is inline */
   }
-  
+
   .action {
     display: inline-flex; /* This ensures the icon and text are properly aligned */
     align-items: center; /* Align items within the link */
@@ -388,7 +388,7 @@
     color: var(--text-color); /* Assuming you want the text color to match your theme */
     transition: color 0.3s ease; /* Smooth transition for hover effect */
   }
-  
+
   .action:hover {
     color: var(--secondary-color); /* Change color on hover for interaction */
   }
@@ -401,33 +401,33 @@
     justify-content: center;
     margin: 20px 0;
   }
-  
+
   /* Hover effect for images */
   .post-images img:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 15px rgba(0, 183, 255, 0.2);
   }
-  
+
   /* Optional: If you want a gallery look with a uniform size */
   .post-images img {
     width: calc(33.333% - 10px); /* Adjust based on how many images you want per row */
     min-width: 150px; /* Ensures a minimum width for small screens */
   }
-  
+
   /* Responsive design */
   @media (max-width: 768px) {
     .post-images img {
       width: calc(50% - 10px); /* Two images per row on smaller screens */
     }
   }
-  
+
   @media (max-width: 480px) {
     .post-images img {
       width: 100%; /* Full width on mobile */
     }
   }
 
-  a:link { 
+  a:link {
     color: #00B7FF; /* or any color for unvisited links */
 }
 a:visited {
