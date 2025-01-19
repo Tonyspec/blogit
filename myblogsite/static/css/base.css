@@ -360,10 +360,6 @@ a:visited {
   form[action="{% url 'post_detail' post.pk %}"] button:hover {
     background: var(--secondary-color);
   }
-
-  a:visited {
-    color: inherit; /* This will make the visited link the same color as the unvisited one */
-    text-decoration: none; /* Removes underline if you don't want it */
 }
 
 .profile-header{
@@ -615,16 +611,61 @@ a:visited {
   transform: scale(1.05);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .tags-page h1 {
-      font-size: 1.5em;
-  }
+    .tags-page {
+        padding: 0 10px; /* Add some padding on mobile */
+    }
 
-  .tag-item {
-      font-size: 0.9em;
-      padding: 4px 8px;
-  }
+    .tags-page h1 {
+        font-size: 1.5em; /* Reduce the size of the main header */
+        text-align: center; /* Center align for better mobile view */
+    }
+
+    .tag-section {
+        margin-bottom: 20px; /* Space between sections */
+    }
+
+    .tag-section h2 {
+        font-size: 1.2em; /* Smaller heading for sections */
+        margin-bottom: 10px; /* Space below headings */
+    }
+
+    .tag-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Center tags */
+        gap: 5px; /* Spacing between tags */
+    }
+
+    .tag-item {
+        font-size: 0.9em !important; /* Base size for tags on mobile */
+        padding: 5px 10px;
+        border-radius: 3px;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.3s ease;
+    }
+
+    .tag-item:hover {
+        background-color: #d0d0d0;
+    }
+
+    /* Adjust tag sizes for mobile */
+    .tag-item[style*="font-size: 1em"] {
+        font-size: 0.9em !important;
+    }
+    .tag-item[style*="font-size: 1.5em"] {
+        font-size: 1.1em !important;
+    }
+    .tag-item[style*="font-size: 2em"] {
+        font-size: 1.2em !important;
+    }
+    .tag-item[style*="font-size: 2.5em"] {
+        font-size: 1.3em !important;
+    }
+    .tag-item[style*="font-size: 3em"] {
+        font-size: 1.4em !important;
+    }
 }
 
 .search-page {
@@ -896,4 +937,112 @@ textarea {
 
 .login-container{
     padding: 1em;
+}
+
+body > main > div > a.btn-edit-profile{
+    padding-left: 1em;
+}
+body > main > div > div.profile-posts > section > p{
+    padding-left: 1em;
+}
+body > main > div > div.profile-header{
+    padding-left: 1em;
+}
+#newCommentForm{
+    padding-right:1em;
+}
+
+/* Styles for tag detail page */
+.tag-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+#favourite-toggle {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#favourite-toggle:hover {
+
+}
+
+.posts-list {
+    margin-top: 20px;
+}
+
+.post-item {
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.post-item h2 {
+    font-size: 1.2em;
+    margin: 0 0 10px 0;
+}
+
+.post-item h2 a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.post-item h2 a:hover {
+    text-decoration: underline;
+}
+
+.post-author {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.post-author a {
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.post-author a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .tag-detail-container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    #favourite-toggle {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .post-item {
+        padding: 10px;
+    }
+
+    .post-item h2 {
+        font-size: 1.1em;
+    }
+
+    .post-author {
+        font-size: 0.8em;
+    }
 }

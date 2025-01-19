@@ -110,6 +110,11 @@
         <div class="form-field">
             {{ form.images.label_tag }}
             {{ form.images }}
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('id_images').setAttribute('multiple', 'multiple');
+            });
+            </script>
         </div>
         <div id="editor">
           <div id="editor-content">

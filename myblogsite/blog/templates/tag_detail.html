@@ -2,16 +2,14 @@
 {% load static %}
 
 {% block extra_head %}
-{% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/post_detail.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}"> {% endcomment %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/homepage.css' %}">
-
+<link rel="stylesheet" type="text/css" href="{% static 'css/tag_detail.css' %}">
 {% endblock %}
+
 {% block content %}
+<div class="tag-detail-container">
     <h1>Tag: {{ tag.name }}</h1>
 
-    <!-- Button to toggle favorite status -->
     {% if request.user.is_authenticated %}
         <button id="favourite-toggle" data-tag-slug="{{ tag.slug }}" data-action="{% if is_favourite %}remove{% else %}add{% endif %}">
             {% if is_favourite %}
@@ -22,12 +20,21 @@
         </button>
     {% endif %}
 
-
-    <!-- Rest of your content -->
-    {% for post in posts %}
-        <div><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></div>
-    {% endfor %}
+    <section class="posts-list">
+        {% if posts %}
+            {% for post in posts %}
+                <article class="post-item">
+                    <h2><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h2>
+                    <p class="post-author">By: <a href="{% url 'profile' post.author.username %}">{{ post.author.username }}</a></p>
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>No posts found for this tag.</p>
+        {% endif %}
+    </section>
+</div>
 {% endblock %}
+
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -40,7 +47,7 @@
             fetch('{% url 'toggle_favourite_tag' tag_slug=tag.slug %}', {
                 method: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',  // Django's CSRF token
+                    'X-CSRFToken': '{{ csrf_token }}',
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({'action': action})

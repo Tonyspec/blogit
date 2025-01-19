@@ -20,6 +20,7 @@ from blog import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap  # Add this import
+from django.views.generic import TemplateView
 
 
 from django.contrib.sitemaps.views import sitemap
@@ -37,6 +38,7 @@ sitemaps = {
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots_file'),
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('account/', include('django.contrib.auth.urls')),
     path('blog/', include('blog.urls')),

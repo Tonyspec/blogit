@@ -10,12 +10,14 @@
 <div class="profile-header">
     <img src="{% if user_profile.profile_image %}{{ user_profile.profile_image.url }}{% else %}{% static 'default/default_img.webp' %}{% endif %}" alt="Profile Image" class="profile-image">
     <h2>{{ user_profile.name|default:user_profile.username }}</h2>
+    <i>@{{ user_profile.username }}</i>
     {% if user_profile.bio %}
+        <h3>Bio:</h3>
         <p class="bio">{{ user_profile.bio }}</p>
     {% endif %}
     <div class="profile-info">
         {% if user_profile.location %}
-            <p>Location: {{ user_profile.location }}</p>
+            <h3>Location: </h3> <p>{{ user_profile.location }}</p>
         {% endif %}
         {% if user_profile != request.user and request.user.is_authenticated %}
             {% if is_following %}
@@ -37,7 +39,7 @@
         {%if post_count > 0%}
             <p>Number of Posts: {{ post_count }}</p>
         {%else%}
-            <p>No posts</p>
+            <p>Number of Posts: 0</p>
         {%endif%}
     </div>
 </div>
@@ -61,12 +63,12 @@
                         <a href="{% url 'tag_detail' tag.slug %}" class="tag">#{{ tag.name }}</a>
                     {% endfor %}
                 </div>
-                <div class="post-content">{{ post.content }}</div>
-                <div class="post-images">
-                    {% for image in post.images.all %}
-                        <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
-                    {% endfor %}
-                </div>
+                <div class="post-content">{{ post.summary }}</div>
+                <div class="image-grid {% if post.images.count == 1 %}one-image{% elif post.images.count == 2 %}two-images{% elif post.images.count == 3 %}three-images{% elif post.images.count == 4 %}four-images{% endif %}">
+                        {% for image in post.images.all %}
+                            <img src="{{ image.image.url }}" alt="{{ image.image.name }}" class="post-image">
+                        {% endfor %}
+                    </div>
                 <div class="post-actions">
                     <form action="{% url 'like_post' post.id %}" method="POST" class="like-form">
                             {% csrf_token %}
@@ -80,7 +82,7 @@
                 </div>
             </article>
         {% empty %}
-            <p>No posts yet. Check back soon!</p>
+            <p>No posts yet.</p>
         {% endfor %}
         <!-- Modal for comments -->
         <div id="commentModal" class="modal">

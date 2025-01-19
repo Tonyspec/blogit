@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'crispy_forms',
     'blog',
     'taggit',
@@ -68,7 +69,7 @@ ROOT_URLCONF = 'myblogsite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'blog/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -150,13 +151,12 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = 'home'
 
 
-#EMAILS
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mail.me.com'
-EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'news_nest@icloud.com'
-EMAIL_HOST_PASSWORD = 'pzbj-ovxw-mtxs-jrmq'  # Note: Not your regular password but an app-specific password
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'testerbender0131@gmail.com'
+EMAIL_HOST_PASSWORD = 'mmon pzpk iliv xazc'  # Use app-specific password for security
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

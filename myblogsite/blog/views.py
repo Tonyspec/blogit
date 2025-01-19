@@ -28,7 +28,7 @@ def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     comments = post.comments.all()
     liked_by_user = post.like_set.filter(user=request.user).exists() if request.user.is_authenticated else False
-    
+
     # Check which comments are liked by the user
     if request.user.is_authenticated:
         liked_comments = set(request.user.commentlike_set.values_list('comment_id', flat=True))
@@ -37,7 +37,7 @@ def post_detail(request, slug):
     else:
         for comment in comments:
             comment.liked_by_user = False
-    
+
     if request.method == 'POST':
         if request.user.is_authenticated:
             form = CommentForm(request.POST)
@@ -85,7 +85,7 @@ def delete_post(request, pk):
     else:
         messages.error(request, 'You do not have permission to delete this post.')
         return redirect('post_detail', pk=pk)
-    
+
 @login_required
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -186,6 +186,8 @@ def create_post(request):
         form = PostForm(request.POST, request.FILES)
 
         print("All POST data:", request.POST)
+        print("Form Data:", request.POST)
+        print("Form Validity:", form.is_valid())
 
         if form.is_valid():
             post = form.save(commit=False)
@@ -283,7 +285,7 @@ def home(request):
         priority=models.Case(
             models.When(has_fav_tag__gt=0, then=4),  # Highest for posts with favorite tags
             models.When(from_followed_user__gt=0, then=3),  # High for posts from followed users
-            models.When(date_posted__gte=today - timedelta(days=1), then=2),  # Medium for recent posts
+            #models.When(date_posted__gte=today - timedelta(days=1), then=2),  # Medium for recent posts
             models.When(Q(like_count__gt=0) | Q(comment_count__gt=0), then=1),  # Lower for posts with engagement
             default=0,  # Lowest for others
             output_field=models.IntegerField()

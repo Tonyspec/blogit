@@ -464,7 +464,7 @@ a:visited {
 /* Modal Content/Box */
 .modal-content {
   background: var(--bg-color);
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 22% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid var(--primary-color);
   width: 80%; /* Could be more or less, depending on screen size */
@@ -594,4 +594,7 @@ a:visited {
 .post-content{
   padding-bottom: 1em;
   font-size: larger;
+}
+#newCommentForm{
+    padding-right:1em;
 }

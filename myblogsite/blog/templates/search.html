@@ -25,7 +25,7 @@
                     <ul>
                     {% for result in post_results %}
                         <li>
-                            <a href="{% url 'post_detail' result.id %}">{{ result.title }}</a> by {{ result.author.username }}
+                            <a href="{% url 'post_detail' result.slug %}">{{ result.title }}</a> by {{ result.author.username }}
                         </li>
                     {% endfor %}
                     </ul>

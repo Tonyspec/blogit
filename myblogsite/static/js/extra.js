@@ -29,14 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         let postId = this.getAttribute('data-post-id');
         let commentText = this.elements['comment_text'].value;
-        
+
         console.log('Comment Text:', commentText); // Log the comment text
-        
+
         if (commentText.trim() === '') {
             console.warn('Comment is empty after trimming whitespace.');
             return;
         }
-    
+
         fetch(`/blog/submit_comment/${postId}/`, {
             method: 'POST',
             headers: {
@@ -57,14 +57,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function fetchComments(postId) {
-        
+
 
         fetch(`/blog/fetch_comments/${postId}/`)
             .then(response => response.json())
             .then(data => {
                 let commentsHTML = '';
                 data.forEach(comment => {
-                    commentsHTML += `<p>${comment.author.username}: ${comment.content} - ${comment.created_date}</p>`;
+                    commentsHTML += `<p>${comment.author.username}: ${comment.content} - ${new Date(comment.created_date).toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+})}</p>`;
                 });
                 commentsContainer.innerHTML = commentsHTML;
             });

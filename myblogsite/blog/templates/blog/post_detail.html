@@ -19,8 +19,8 @@
     }
 
     .comment-like-button, .delete-comment-button {
-        margin: 0; 
-        padding: 0; 
+        margin: 0;
+        padding: 0;
         background: none;
         border: none;
         cursor: pointer;
@@ -40,6 +40,40 @@
         font-size: 1.5em; /* Adjust as needed */
         color: #555; /* A subtle color, adjust for visibility */
     }
+    .post-image {
+        width: 100%; /* Default full width for single images */
+        max-width: 100%;
+        height: auto;
+        cursor: pointer; /* Changes cursor to indicate it's clickable */
+    }
+
+    .image-grid {
+        display: grid;
+        gap: 10px;
+        /* Force grid to be inline if necessary */
+        width: 100%;
+    }
+
+    .image-grid.two-images {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .image-grid.three-images {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .image-grid.four-images {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+    }
+
+    /* Ensure images fit within their grid cell */
+    .image-grid img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* This ensures the image covers the cell while maintaining aspect ratio */
+    }
+
 </style>
 <div class="post-detail">
     <h2>{{ post.title }}</h2>
@@ -109,7 +143,7 @@
                     </form>
                 {% endif %}
             </div>
-                
+
         {% endfor %}
         <form method="post" action="{% url 'post_detail' slug=post.slug %}">
             {% csrf_token %}
@@ -123,17 +157,20 @@
     <script src="{% static 'js/like_post.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const images = document.querySelectorAll('.post-image');
-            images.forEach(image => {
-                image.addEventListener('click', function() {
-                    if (document.fullscreenElement) {
-                        document.exitFullscreen();
-                    } else {
-                        image.requestFullscreen();
-                    }
+    const images = document.querySelectorAll('.post-image');
+    images.forEach(image => {
+        image.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                image.requestFullscreen().catch(err => {
+                    console.error('Failed to enter full-screen mode:', err);
                 });
-            });
+            }
         });
+    });
+});
     </script>
 </div>
 {% endblock %}
