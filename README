@@ -1,2 +1,30 @@
-Web application that allows users to post their articles and follow topics that they find interesting. 
-Built on Django with JS, HTML and CSS
+VoxPop - Community Driven News Platform
+Overview
+VoxPop is an innovative web application designed to democratize journalism by giving everyone the opportunity to become a "journalist". It's built using Django, a high-level Python web framework, and offers a platform where users can:
+
+Create and Share News: Users can write, publish, and share news articles, stories, or opinion pieces.
+Tagging System: Articles can be tagged, allowing for easy categorization and discovery. Users can also follow specific tags to curate their news feed.
+Engagement: Like, comment, and follow other users to engage with content, fostering a community around news and stories.
+Favourite Tags: Users can mark tags as favourites, which will prioritize content related to those tags in their view.
+Personal Profiles: Each user has a profile where their contributions are showcased, and they can follow or be followed by other users.
+Responsive Design: The application is designed to be accessible and visually appealing on both desktop and mobile devices.
+
+Features
+User Interaction
+Registration & Authentication: Users can sign up, log in, and manage their profiles.
+Post Creation: Write articles with the ability to add subheadings, paragraphs, summaries, and multiple images (up to four per post).
+Comment System: Users can comment on posts, with the ability to like comments.
+Like System: Users can like posts and comments, with visual feedback on their actions.
+
+Content Management
+Tagging: Posts can be tagged. Tags serve as categories and can be popular, main (predefined), or user favorites.
+Post Ranking: Posts are ranked based on user preferences (favorite tags, followed users), engagement (likes, comments), and recency, providing personalized content feeds.
+
+Social Features
+Follow System: Users can follow each other to see updates from their network.
+Notifications: Users receive notifications for interactions like likes, comments, or being followed.
+
+User Experience
+Responsive Layout: Ensures a seamless experience across different devices.
+Favourite Tags: Users can save tags they are interested in, which influences content prioritization.
+Full-Screen Image View: Images in posts can be viewed in full screen on click, enhancing the visual storytelling aspect.
