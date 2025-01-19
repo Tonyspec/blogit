@@ -61,4 +61,5 @@ urlpatterns = [
     path('tag/<slug:tag_slug>/', views.tag_detail, name='tag_detail'),
     path('tag/<slug:tag_slug>/toggle-favourite/', views.toggle_favourite_tag, name='toggle_favourite_tag'),
     path('about/', views.about_project, name='about_project'),
+    path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
 ]

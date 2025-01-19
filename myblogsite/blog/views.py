@@ -5,20 +5,21 @@ from django.http import JsonResponse
 from .forms import CommentForm, UserSignUpForm, LoginForm, ProfileEditForm, SearchForm, PostForm, ArticleForm, ArticleFormSet, SubheadingForm, SubheadingFormSet
 import logging
 from django.contrib.auth import login
-from django.db import transaction
+from django.db import transaction, models
 from django.core.mail import send_mail
 
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
+from django.db.models import Count, Q
+from django.utils import timezone
+from datetime import timedelta
+
 
 
 from .forms import PostForm, PostImage
 from django.contrib.auth.decorators import login_required
-
-def home(request):
-    return render(request, 'blog/home.html')
 
 def placeholder_view(request):
     return render(request, 'placeholder.html')
@@ -73,6 +74,24 @@ def delete_post(request, pk):
     else:
         messages.error(request, 'You do not have permission to delete this post.')
         return redirect('post_detail', pk=pk)
+    
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    # Check if the user is the author of the comment
+    if request.user == comment.author:
+        if request.method == 'POST':
+            # Delete the comment
+            comment.delete()
+            messages.success(request, 'Comment has been deleted successfully.')
+            return redirect('post_detail', slug=comment.post.slug)  # Redirect back to post detail
+        else:
+            # If it's not a POST request, show a confirmation page if needed
+            return render(request, 'confirm_delete.html', {'comment': comment})
+    else:
+        messages.error(request, 'You do not have permission to delete this comment.')
+        return redirect('post_detail', slug=comment.post.slug)
 
 def signup_view(request):
     if request.method == 'POST':
@@ -228,8 +247,39 @@ def tag_detail(request, tag_slug):
 
 
 def home(request):
-    # Fetch all posts or latest posts, here we're fetching all
-    posts = Post.objects.all().order_by('-date_posted', '-time_posted')[:10]  # Latest 10 posts
+    # Assuming the user has favorite tags stored under 'favourite_tags'
+    if request.user.is_authenticated:
+        user_favorite_tags = request.user.favourite_tags.all()
+    else:
+        user_favorite_tags = []
+
+    # Today's date for checking recent posts
+    today = timezone.now().date()
+
+    # Query for all posts
+    posts = Post.objects.filter(published=True)
+
+    # Annotate and order all posts
+    posts = posts.annotate(
+        like_count=Count('like'),
+        comment_count=Count('comments'),
+        has_fav_tag=Count('tags', filter=Q(tags__in=user_favorite_tags), distinct=True),
+    ).annotate(
+        # Create an ordering field. Higher values mean higher priority
+        priority=models.Case(
+            models.When(has_fav_tag__gt=0, then=3),  # Highest for posts with favorite tags
+            models.When(date_posted__gte=today - timedelta(days=1), then=2),  # High for recent posts
+            models.When(Q(like_count__gt=0) | Q(comment_count__gt=0), then=1),  # Medium for posts with engagement
+            default=0,  # Lowest for others
+            output_field=models.IntegerField()
+        )
+    ).order_by(
+        '-priority',  # First by our custom priority
+        '-like_count',  # Then by likes
+        '-comment_count',  # Then by comments
+        '-date_posted'  # Then by date, most recent first
+    )
+
     return render(request, 'blog/home.html', {'posts': posts})
 
 #LIKE POST
@@ -321,9 +371,13 @@ def like_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     user = request.user
 
-    if request.user in comment.likes.all():
-        comment.likes.remove(request.user)
-    else:
+    try:
+        # Try to fetch the existing like
+        like = CommentLike.objects.get(comment=comment, user=user)
+        # If we find a like, we remove it (dislike)
+        like.delete()
+    except CommentLike.DoesNotExist:
+        # If no like exists, create one
         CommentLike.objects.create(comment=comment, user=user)
         Notification.objects.create(
             user=comment.author,

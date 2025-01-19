@@ -7,53 +7,39 @@
 
 {% block content %}
 <style>
-    .post-content h3 {
-    margin-top: 20px;
-}
-.post-content p {
-    margin-bottom: 15px;
-}
-.summary {
-    margin: 10px 0;
-}
-.post-detail {
-    /* Existing styles */
-}
+    .comment-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-.post-image {
-    width: 100%; /* Default full width for single images */
-    max-width: 100%;
-    height: auto;
-    cursor: pointer; /* Changes cursor to indicate it's clickable */
-}
+    .like-section {
+        display: flex;
+        align-items: center; /* This aligns the like button and count vertically */
+    }
 
-.image-grid {
-    display: grid;
-    gap: 10px;
-    /* Force grid to be inline if necessary */
-    width: 100%;
-}
+    .comment-like-button, .delete-comment-button {
+        margin: 0; 
+        padding: 0; 
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
 
-.image-grid.two-images {
-    grid-template-columns: repeat(2, 1fr);
-}
+    .comment-like-button {
+        font-size: 18px; /* Adjust size as needed */
+    }
 
-.image-grid.three-images {
-    grid-template-columns: repeat(3, 1fr);
-}
+    .delete-comment-button {
+        font-size: 14px; /* Adjust size as needed */
+        color: red; /* Optional: color for visibility */
+    }
 
-.image-grid.four-images {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-}
-
-/* Ensure images fit within their grid cell */
-.image-grid img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* This ensures the image covers the cell while maintaining aspect ratio */
-}
-
+    .comment-like-count {
+        margin-left: 5px; /* Space between button and count */
+        font-size: 1.5em; /* Adjust as needed */
+        color: #555; /* A subtle color, adjust for visibility */
+    }
 </style>
 <div class="post-detail">
     <h2>{{ post.title }}</h2>
@@ -106,15 +92,26 @@
         <h3>Comments ({{ post.comments_count }})</h3>
         {% for comment in comments %}
             <p>{{ comment.author.username }}: {{ comment.content }} - {{ comment.created_date }}</p>
-               <form action="{% url 'like_comment' comment.id %}" method="POST" style="display:inline;">
-                   {% csrf_token %}
-                   <button type="submit" class="comment-like-button {% if comment in request.user.comment_likes %}liked{% endif %}">
-                       <i class="fa fa-thumbs-up"></i>
-                   </button>
-               </form>
-               <span class="comment-like-count">{{ comment.likes_count }}</span>
+            <div class="comment-actions">
+                <div class="like-section">
+                    <form action="{% url 'like_comment' comment.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="comment-like-button {% if comment in request.user.comment_likes %}liked{% endif %}">
+                            <i class="fa fa-thumbs-up"></i>
+                        </button>
+                    </form>
+                    <span class="comment-like-count">{{ comment.likes_count }}</span>
+                </div>
+                {% if request.user == comment.author %}
+                    <form method="post" action="{% url 'delete_comment' comment.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-comment-button">Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+                
         {% endfor %}
-        <form method="post" action="{% url 'post_detail' post.pk %}">
+        <form method="post" action="{% url 'post_detail' slug=post.slug %}">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Submit Comment</button>
