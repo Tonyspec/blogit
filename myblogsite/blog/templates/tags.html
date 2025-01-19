@@ -30,12 +30,16 @@
         <div class="tag-section">
             <h2>Your Favourite Tags</h2>
             <div class="tag-cloud">
-                {% if favourite_tags %}
-                    {% for tag in favourite_tags %}
-                        <a href="{% url 'tag_detail' tag.slug %}" class="tag-item">#{{ tag.name }}</a>
-                    {% empty %}
+                {% if request.user.is_authenticated %}
+                    {% if favourite_tags %}
+                        {% for tag in favourite_tags %}
+                            <a href="{% url 'tag_detail' tag.slug %}" class="tag-item">#{{ tag.name }}</a>
+                        {% empty %}
+                            <p>You have no favourite tags yet.</p>
+                        {% endfor %}
+                    {% else %}
                         <p>You have no favourite tags yet.</p>
-                    {% endfor %}
+                    {% endif %}
                 {% else %}
                     <p>Please log in to see your favourite tags.</p>
                 {% endif %}
