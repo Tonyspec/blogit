@@ -27,7 +27,17 @@ def placeholder_view(request):
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     comments = post.comments.all()
-
+    liked_by_user = post.like_set.filter(user=request.user).exists() if request.user.is_authenticated else False
+    
+    # Check which comments are liked by the user
+    if request.user.is_authenticated:
+        liked_comments = set(request.user.commentlike_set.values_list('comment_id', flat=True))
+        for comment in comments:
+            comment.liked_by_user = comment.id in liked_comments
+    else:
+        for comment in comments:
+            comment.liked_by_user = False
+    
     if request.method == 'POST':
         if request.user.is_authenticated:
             form = CommentForm(request.POST)
@@ -55,6 +65,7 @@ def post_detail(request, slug):
         'post': post,
         'comments': comments,
         'form': form,
+        'liked_by_user': liked_by_user,
     })
 
 @login_required
@@ -250,7 +261,6 @@ def home(request):
     # Assuming the user has favorite tags stored under 'favourite_tags'
     if request.user.is_authenticated:
         user_favorite_tags = request.user.favourite_tags.all()
-        # Fetch the users that the current user follows
         followed_users = [follow.followed for follow in request.user.following.all()]
     else:
         user_favorite_tags = []
@@ -284,6 +294,16 @@ def home(request):
         '-comment_count',  # Then by comments
         '-date_posted'  # Then by date, most recent first
     )
+
+    # Check which posts are liked by the user
+    if request.user.is_authenticated:
+        liked_posts = set(request.user.like_set.values_list('post_id', flat=True))
+        posts = list(posts)
+        for post in posts:
+            post.liked_by_user = post.id in liked_posts
+    else:
+        for post in posts:
+            post.liked_by_user = False
 
     return render(request, 'blog/home.html', {'posts': posts})
 

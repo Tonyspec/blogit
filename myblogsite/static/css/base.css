@@ -326,9 +326,10 @@ a:visited {
     transition: color 0.3s ease;
   }
 
-  #comments p i.fa-thumbs-up:hover {
+  #comments p i.fa-thumbs-up:hover,  #comments p i.fa-thumbs-up.liked{
     color: var(--primary-color);
   }
+
 
   /* Comment Form */
   form[action="{% url 'post_detail' post.pk %}"] {

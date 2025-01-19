@@ -202,14 +202,6 @@
     color: var(--bg-color);
   }
 
-  /* Images */
-  /* .post-images img, .post-detail img {
-    max-width: 100%;
-    border-radius: 5px;
-    box-shadow: 0 0 20px rgba(0, 183, 255, 0.5);
-    transition: opacity 0.3s ease;
-  } */
-
   .post-images img.loaded, .post-detail img.loaded {
     opacity: 1;
   }
