@@ -199,10 +199,32 @@ def create_post(request):
 
 from taggit.models import Tag
 
+@login_required
+def toggle_favourite_tag(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    user = request.user
+    if tag in user.favourite_tags.all():
+        user.favourite_tags.remove(tag)
+        action = "removed"
+    else:
+        user.favourite_tags.add(tag)
+        action = "added"
+    return JsonResponse({'action': action, 'tag_slug': tag.slug})
+
 def tag_detail(request, tag_slug):
     tag = get_object_or_404(Tag, slug=tag_slug)
     posts = Post.objects.filter(tags__in=[tag])
-    return render(request, 'tag_detail.html', {'tag': tag, 'posts': posts})
+    # Check if the user is authenticated before accessing profileuser
+    if request.user.is_authenticated:
+        is_favourite = tag in request.user.favourite_tags.all()
+    else:
+        is_favourite = False  # or you might choose not to show this info at all for anonymous users
+
+    return render(request, 'tag_detail.html', {
+        'tag': tag,
+        'posts': posts,
+        'is_favourite': is_favourite
+    })
 
 
 def home(request):
@@ -350,21 +372,63 @@ def submit_comment(request, post_id):
 
 from django.db.models import Count
 def all_tags(request):
-    # Here you would calculate or fetch the tag sizes based on your logic
-    # For example, based on how many posts each tag is associated with
-    tags = Tag.objects.annotate(size=Count('post')).order_by('-size')
+    # Popular Tags: based on usage frequency
+    popular_tags = Tag.objects.annotate(num_posts=Count('post')).order_by('-num_posts')[:20]  # Top 20
 
-    # Convert the count to a size for the tag cloud (this is just an example)
-    for tag in tags:
-        tag.size = 1 + (tag.size / max(tag.size for tag in tags)) * 2  # Scale size between 1em and 3em
+    # Main Categories: Predefined categories
+    main_categories = [
+        'World', 'Politics', 'Business', 'Economy', 'Technology',
+        'Science', 'Health', 'Environment', 'Sports', 'Entertainment',
+        'Arts & Culture', 'Crime', 'Education', 'Media', 'Weather',
+        'Military', 'Human Rights', 'Energy', 'Travel', 'Lifestyle'
+    ]
 
-    return render(request, 'tags.html', {'tags': tags})
+    # Convert main categories to Tag objects if needed
+    main_tags = Tag.objects.filter(name__in=main_categories).annotate(num_posts=Count('post'))
+
+    # Favorite Tags: Only for authenticated users
+    if request.user.is_authenticated:
+        favourite_tags = request.user.favourite_tags.all()
+    else:
+        favourite_tags = None
+
+    # Scale tag size for visual representation
+    # Scale tag size for visual representation
+    def scale_size(tags):
+        if tags:
+            post_counts = [tag.num_posts for tag in tags if hasattr(tag, 'num_posts')]
+            if post_counts:
+                max_count = max(post_counts)
+                for tag in tags:
+                    if hasattr(tag, 'num_posts'):
+                        # Avoid division by zero
+                        if max_count > 0:
+                            tag.size = 1 + (tag.num_posts / max_count) * 2
+                        else:
+                            tag.size = 1  # Default size if no posts are tagged
+                    else:
+                        tag.size = 1.5  # Default for tags without count data
+            else:
+                for tag in tags:
+                    tag.size = 1  # If no tags have posts, set a uniform size for all
+        return tags
+
+    popular_tags = scale_size(popular_tags)
+    main_tags = scale_size(main_tags)
+
+    return render(request, 'tags.html', {
+        'popular_tags': popular_tags,
+        'main_tags': main_tags,
+        'favourite_tags': favourite_tags
+    })
+
 
 from django.db.models import Q
 def search(request):
     query = None
     post_results = []
     user_results = []
+    tag_results = []
     form = SearchForm()
 
     if 'query' in request.GET:
@@ -375,7 +439,7 @@ def search(request):
             # Search for posts
             post_results = Post.objects.filter(
                 Q(title__icontains=query) |
-                Q(content__icontains=query)
+                Q(summary__icontains=query)
             )
 
             # Search for users
@@ -385,11 +449,22 @@ def search(request):
                 Q(last_name__icontains=query)
             )
 
+           # Search for tags
+            tag_results = Tag.objects.filter(name__icontains=query)
+
+            # If tags are found, include posts that have these tags
+            if tag_results:
+                # Use the tag objects to find posts
+                posts_with_tags = Post.objects.filter(tags__in=tag_results)
+                # Combine these results with existing post results
+                post_results = (post_results | posts_with_tags).distinct()
+
     return render(request, 'search.html', {
         'form': form,
         'query': query,
         'post_results': post_results,
         'user_results': user_results,
+        'tag_results': tag_results,
     })
 
 @login_required
@@ -416,19 +491,19 @@ def delete_account(request):
             user = request.user
             email = user.email
             username = user.username
-            
+
             # Delete the user
             user.delete()
-            
+
             # Send confirmation email
             subject = 'Account Deletion Confirmation'
             message = f'Hello {username},\n\nYour account with the email {email} has been deleted from our system.'
             send_mail(subject, message, 'testerbender0131@gmail.com', [email], fail_silently=False)
-            
+
             # Log out the user (if the session still exists)
             from django.contrib.auth import logout
             logout(request)
-            
+
             messages.success(request, 'Your account has been deleted. A confirmation email has been sent to your email address.')
             return redirect('home')  # Redirect to home or any other appropriate page
 

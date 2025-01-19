@@ -20,6 +20,7 @@ class ProfileUser(AbstractUser):
     bio = models.TextField(max_length=500, blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)  # Extended length for detailed locations
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    favourite_tags = TaggableManager(blank=True)
 
     def __str__(self):
         return self.username if self.name is None else self.name

@@ -58,4 +58,7 @@ urlpatterns = [
     path('notifications/mark-as-read/<int:notification_id>/', views.mark_as_read, name='mark_as_read'),
     path('post/<int:pk>/delete/', views.delete_post, name='delete_post'),
     path('delete-account/', views.delete_account, name='delete_account'),
+    path('tag/<slug:tag_slug>/', views.tag_detail, name='tag_detail'),
+    path('tag/<slug:tag_slug>/toggle-favourite/', views.toggle_favourite_tag, name='toggle_favourite_tag'),
+
 ]

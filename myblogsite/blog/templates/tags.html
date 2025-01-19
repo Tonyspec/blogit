@@ -3,12 +3,44 @@
 {% block content %}
     <div class="tags-page">
         <h1>Tags</h1>
-        <div class="tag-cloud">
-            {% for tag in tags %}
-                <a href="{% url 'tag_detail' tag.slug %}" class="tag-item" style="font-size: {{ tag.size }}em;">#{{ tag.name }}</a>
-            {% empty %}
-                <p>No tags found.</p>
-            {% endfor %}
+
+        <div class="tag-section">
+            <h2>Popular Tags</h2>
+            <div class="tag-cloud">
+                {% for tag in popular_tags %}
+                    <a href="{% url 'tag_detail' tag.slug %}" class="tag-item" style="font-size: {{ tag.size }}em;">#{{ tag.name }}</a>
+                {% empty %}
+                    <p>No popular tags found.</p>
+                {% endfor %}
+            </div>
         </div>
+
+        <div class="tag-section">
+            <h2>Main Categories</h2>
+            <div class="tag-cloud">
+                {% for tag in main_tags %}
+                    <a href="{% url 'tag_detail' tag.slug %}" class="tag-item" style="font-size: {{ tag.size }}em;">#{{ tag.name }}</a>
+                {% empty %}
+                    <p>No main categories found.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if request.user.is_authenticated %}
+        <div class="tag-section">
+            <h2>Your Favourite Tags</h2>
+            <div class="tag-cloud">
+                {% if favourite_tags %}
+                    {% for tag in favourite_tags %}
+                        <a href="{% url 'tag_detail' tag.slug %}" class="tag-item">#{{ tag.name }}</a>
+                    {% empty %}
+                        <p>You have no favourite tags yet.</p>
+                    {% endfor %}
+                {% else %}
+                    <p>Please log in to see your favourite tags.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 {% endblock %}

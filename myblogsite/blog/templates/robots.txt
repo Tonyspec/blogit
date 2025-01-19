@@ -1,0 +1,15 @@
+User-agent: *
+
+Allow: /post/
+Allow: /profile/
+Allow: /tag/
+Allow: /search/
+Allow: /tags/
+
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /logout/
+Disallow: /password_reset/
+Disallow: /reset/
+
+Sitemap: https://voxpop.live/sitemap.xml
