@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="about-page">
+    <h1>{{ title }}</h1>
+    
+    <p>{{ description }}</p>
+    
+    <section class="mission-statement">
+        <h2>Our Mission</h2>
+        <p>At VoxPop, we believe in democratizing journalism. Our mission is to empower individuals to share their perspectives, insights, and observations with the world. We aim to:</p>
+        <ul>
+            <li>Create a platform where anyone can report news and stories that matter to them.</li>
+            <li>Encourage diverse voices to contribute to the narrative of our times.</li>
+            <li>Foster a community that values truth, transparency, and fact-based reporting.</li>
+            <li>Provide tools and education to help users become better storytellers and journalists.</li>
+        </ul>
+    </section>
+
+    <section class="how-it-works">
+        <h2>How VoxPop Works</h2>
+        <p>Here’s how you can participate:</p>
+        <ol>
+            <li><strong>Sign Up:</strong> Create an account to start your journey as a citizen journalist.</li>
+            <li><strong>Write:</strong> Share news, opinion pieces, or personal stories. Each post can be tagged, categorized, and linked to sources for credibility.</li>
+            <li><strong>Engage:</strong> Comment on others’ posts, like or dislike content, and follow other journalists to curate your news feed.</li>
+            <li><strong>Learn:</strong> Access our resources on journalism ethics, writing tips, and how to verify information.</li>
+        </ol>
+    </section>
+
+    <section class="community">
+        <h2>Join the Community</h2>
+        <p>By joining VoxPop, you become part of a community where every voice matters. Here, you can:</p>
+        <ul>
+            <li>Discover new stories from around the globe.</li>
+            <li>Build your reputation as a trusted source of news.</li>
+            <li>Collaborate with other users on projects or investigations.</li>
+            <li>Help shape the future of community-driven journalism.</li>
+        </ul>
+    </section>
+
+    <section class="get-involved">
+        <h2>Get Involved</h2>
+        <p>Ready to make your mark in journalism? <a href="{% url 'signup' %}">Sign up now</a>, or if you're already a member, <a href="{% url 'home' %}">start writing your first story</a>.</p>
+    </section>
+</div>
+{% endblock %}

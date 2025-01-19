@@ -509,6 +509,15 @@ def delete_account(request):
 
     return render(request, 'confirm_delete.html')
 
+from django.shortcuts import render
+
+def about_project(request):
+    context = {
+        'title': 'About VoxPop',
+        'description': 'VoxPop is a platform where everyone has the voice of a journalist. Share your stories, report on the news, and engage with a community passionate about uncovering the truth.'
+    }
+    return render(request, 'about_project.html', context)
+
 from rest_framework import viewsets
 from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike
 from .serializers import PostSerializer, ProfileUserSerializer, LikeSerializer, CommentSerializer, FollowSerializer, CommentLikeSerializer
