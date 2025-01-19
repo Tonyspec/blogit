@@ -29,6 +29,15 @@ def post_detail(request, slug):
     comments = post.comments.all()
     liked_by_user = post.like_set.filter(user=request.user).exists() if request.user.is_authenticated else False
     
+    # Check which comments are liked by the user
+    if request.user.is_authenticated:
+        liked_comments = set(request.user.commentlike_set.values_list('comment_id', flat=True))
+        for comment in comments:
+            comment.liked_by_user = comment.id in liked_comments
+    else:
+        for comment in comments:
+            comment.liked_by_user = False
+    
     if request.method == 'POST':
         if request.user.is_authenticated:
             form = CommentForm(request.POST)
@@ -252,7 +261,6 @@ def home(request):
     # Assuming the user has favorite tags stored under 'favourite_tags'
     if request.user.is_authenticated:
         user_favorite_tags = request.user.favourite_tags.all()
-        # Fetch the users that the current user follows
         followed_users = [follow.followed for follow in request.user.following.all()]
     else:
         user_favorite_tags = []
@@ -286,6 +294,16 @@ def home(request):
         '-comment_count',  # Then by comments
         '-date_posted'  # Then by date, most recent first
     )
+
+    # Check which posts are liked by the user
+    if request.user.is_authenticated:
+        liked_posts = set(request.user.like_set.values_list('post_id', flat=True))
+        posts = list(posts)
+        for post in posts:
+            post.liked_by_user = post.id in liked_posts
+    else:
+        for post in posts:
+            post.liked_by_user = False
 
     return render(request, 'blog/home.html', {'posts': posts})
 
@@ -537,4 +555,72 @@ def notifications(request):
         'unread_count': unread_count
     })
 
-def mark_as_read(request, notificatio
+def mark_as_read(request, notification_id):
+    notification = Notification.objects.get(id=notification_id)
+    if notification.user == request.user:
+        notification.is_read = True
+        notification.save()
+    return redirect('notifications')  # Assuming you have a route named 'notifications'
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        # This is a security measure to ensure the user really wants to delete the account
+        if 'confirm_delete' in request.POST:
+            user = request.user
+            email = user.email
+            username = user.username
+
+            # Delete the user
+            user.delete()
+
+            # Send confirmation email
+            subject = 'Account Deletion Confirmation'
+            message = f'Hello {username},\n\nYour account with the email {email} has been deleted from our system.'
+            send_mail(subject, message, 'testerbender0131@gmail.com', [email], fail_silently=False)
+
+            # Log out the user (if the session still exists)
+            from django.contrib.auth import logout
+            logout(request)
+
+            messages.success(request, 'Your account has been deleted. A confirmation email has been sent to your email address.')
+            return redirect('home')  # Redirect to home or any other appropriate page
+
+    return render(request, 'confirm_delete.html')
+
+from django.shortcuts import render
+
+def about_project(request):
+    context = {
+        'title': 'About VoxPop',
+        'description': 'VoxPop is a platform where everyone has the voice of a journalist. Share your stories, report on the news, and engage with a community passionate about uncovering the truth.'
+    }
+    return render(request, 'about_project.html', context)
+
+from rest_framework import viewsets
+from .models import Post, ProfileUser, Like, Comment, Follow, CommentLike
+from .serializers import PostSerializer, ProfileUserSerializer, LikeSerializer, CommentSerializer, FollowSerializer, CommentLikeSerializer
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+class ProfileUserViewSet(viewsets.ModelViewSet):
+    queryset = ProfileUser.objects.all()
+    serializer_class = ProfileUserSerializer
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+
+class FollowViewSet(viewsets.ModelViewSet):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+
+class CommentLikeViewSet(viewsets.ModelViewSet):
+    queryset = CommentLike.objects.all()
+    serializer_class = CommentLikeSerializer

@@ -96,7 +96,7 @@
                 <div class="like-section">
                     <form action="{% url 'like_comment' comment.id %}" method="POST" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="comment-like-button {% if comment in request.user.comment_likes %}liked{% endif %}">
+                        <button type="submit" class="comment-like-button {% if comment.liked_by_user %}liked{% endif %}">
                             <i class="fa fa-thumbs-up"></i>
                         </button>
                     </form>
