@@ -50,4 +50,12 @@ urlpatterns = [
     path('like_comment/<int:comment_id>/', views.like_comment, name='like_comment'),
     path('fetch_comments/<int:post_id>/', views.fetch_comments, name='fetch_comments'),
     path('submit_comment/<int:post_id>/', views.submit_comment, name='submit_comment'),
-    path('profile/<str:username>/following/', views.f
+    path('profile/<str:username>/following/', views.following, name='following'),
+    path('profile/<str:username>/followers/', views.followers, name='followers'),
+    path('new_post/', views.create_post, name='create_post'),
+    #path('api/', include(router.urls)),
+    path('notifications/', views.notifications, name='notifications'),
+    path('notifications/mark-as-read/<int:notification_id>/', views.mark_as_read, name='mark_as_read'),
+    path('post/<int:pk>/delete/', views.delete_post, name='delete_post'),
+    path('delete-account/', views.delete_account, name='delete_account'),
+]
